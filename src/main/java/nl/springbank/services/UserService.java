@@ -1,6 +1,7 @@
 package nl.springbank.services;
 
 import nl.springbank.bean.BankAccountBean;
+import nl.springbank.bean.CardBean;
 import nl.springbank.bean.UserBean;
 import nl.springbank.dao.UserDao;
 import nl.springbank.exceptions.AuthenticationError;
@@ -158,6 +159,30 @@ public class UserService {
     public void checkAccess(BankAccountBean bankAccount, UserBean user) throws NotAuthorizedError {
         if (!bankAccount.getAccessUsers().contains(user)) {
             throw new NotAuthorizedError("User is not eligible to get access");
+        }
+    }
+
+    /**
+     * Check if the user that belongs to the given authentication token is the owner of the given card.
+     *
+     * @param card      the given card
+     * @param authToken the given authentication token
+     * @throws NotAuthorizedError if the user is not the owner of the given card
+     */
+    public void checkCardOwner(CardBean card, String authToken) throws NotAuthorizedError {
+        checkCardOwner(card, getUserByAuth(authToken));
+    }
+
+    /**
+     * Check if the given user is the owner of the given card.
+     *
+     * @param card the given card
+     * @param user the given user
+     * @throws NotAuthorizedError if the user is not the owner of the given card
+     */
+    public void checkCardOwner(CardBean card, UserBean user) throws NotAuthorizedError {
+        if (!card.getUser().equals(user)) {
+            throw new NotAuthorizedError("User is not the card owner");
         }
     }
 

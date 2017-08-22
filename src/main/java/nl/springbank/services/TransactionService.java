@@ -107,6 +107,24 @@ public class TransactionService {
     }
 
     /**
+     * Makes a new withdrawal
+     *
+     * @param bankAccount the source bank account
+     * @param amount      the amount
+     * @throws InvalidParamValueError if the amount is less than zero or the source bank account dus not have enough
+     *                                money
+     */
+    public synchronized void newWithdrawal(BankAccountBean bankAccount, double amount) throws InvalidParamValueError {
+        checkAmount(bankAccount, amount);
+        TransactionBean transaction = new TransactionBean();
+        bankAccount.setBalance(bankAccount.getBalance() - amount);
+        transaction.setSourceBankAccount(bankAccount);
+        transaction.setAmount(amount);
+        transaction.setDate(Timestamp.from(Instant.now()));
+        saveTransaction(transaction);
+    }
+
+    /**
      * Makes a new transaction.
      *
      * @param sourceAccount the source bank account
@@ -114,14 +132,11 @@ public class TransactionService {
      * @param targetName    the target name
      * @param amount        the amount
      * @param description   the description
-     * @throws InvalidParamValueError if the transaction couldn't be made
+     * @throws InvalidParamValueError if the amount is less than zero or the source bank account dus not have enough
+     *                                money
      */
     public synchronized void newTransaction(BankAccountBean sourceAccount, BankAccountBean targetAccount, String targetName, double amount, String description) throws InvalidParamValueError {
-        if (amount < 0) {
-            throw new InvalidParamValueError("Amount less than zero: " + amount);
-        } else if (amount > sourceAccount.getBalance()) {
-            throw new InvalidParamValueError("Amount more than account balance: " + amount);
-        }
+        checkAmount(sourceAccount, amount);
         sourceAccount.setBalance(sourceAccount.getBalance() - amount);
         targetAccount.setBalance(targetAccount.getBalance() + amount);
 
@@ -133,6 +148,21 @@ public class TransactionService {
         transaction.setMessage(description);
         transaction.setDate(Timestamp.from(Instant.now()));
         saveTransaction(transaction);
+    }
+
+    /**
+     * Checks if the amount is valid for the given bank account.
+     *
+     * @param bankAccount the given bank account
+     * @param amount      the amount
+     * @throws InvalidParamValueError if the amount is less than zero or the bank account dus not have enough money
+     */
+    private void checkAmount(BankAccountBean bankAccount, double amount) throws InvalidParamValueError {
+        if (amount < 0) {
+            throw new InvalidParamValueError("Amount less than zero: " + amount);
+        } else if (amount > bankAccount.getBalance()) {
+            throw new InvalidParamValueError("Amount more than account balance: " + amount);
+        }
     }
 
     /**

@@ -1,5 +1,6 @@
 <hibernate-configuration>
     <session-factory>
+        <!--<property name="hibernate.connection.url">jdbc:mysql://45.76.39.40:3306/springbank</property>-->
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/springbank</property>
         <property name="hibernate.connection.username">springbank</property>
         <property name="hibernate.connection.password">bBFKB63UOxoKXrny</property>
