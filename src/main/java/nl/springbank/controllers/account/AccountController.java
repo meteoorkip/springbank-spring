@@ -37,7 +37,7 @@ public interface AccountController {
      * </ul>
      * @throws InvalidParamValueError One or more parameter has an invalid value. See message.
      */
-    @JsonRpcErrors({@JsonRpcError(exception = InvalidParamValueError.class, code = 418)})
+    @JsonRpcErrors(@JsonRpcError(exception = InvalidParamValueError.class, code = 418))
     OpenedAccountObject openAccount(
             @JsonRpcParam("name") String name,
             @JsonRpcParam("surname") String surname,
@@ -64,7 +64,7 @@ public interface AccountController {
      * </ul>
      * @throws NotAuthorizedError The authenticated user is not authorized to perform this action.
      */
-    @JsonRpcErrors({@JsonRpcError(exception = NotAuthorizedError.class, code = 419)})
+    @JsonRpcErrors(@JsonRpcError(exception = NotAuthorizedError.class, code = 419))
     OpenedAccountObject openAdditionalAccount(@JsonRpcParam("authToken") String authToken) throws NotAuthorizedError;
 
     /**
