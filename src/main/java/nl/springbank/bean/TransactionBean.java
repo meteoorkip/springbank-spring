@@ -1,7 +1,7 @@
 package nl.springbank.bean;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Date;
 
 import static javax.persistence.GenerationType.AUTO;
 
@@ -39,7 +39,7 @@ public class TransactionBean implements Comparable<TransactionBean> {
 
     /** The date of the transaction */
     @Column(name = "date")
-    private Timestamp date;
+    private Date date;
 
     /** The amount of the transaction */
     @Column(name = "amount")
@@ -84,11 +84,11 @@ public class TransactionBean implements Comparable<TransactionBean> {
         this.targetName = targetName;
     }
 
-    public Timestamp getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

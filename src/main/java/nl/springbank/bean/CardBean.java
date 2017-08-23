@@ -1,7 +1,7 @@
 package nl.springbank.bean;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 
 import static javax.persistence.GenerationType.AUTO;
 

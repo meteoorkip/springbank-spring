@@ -2,8 +2,8 @@ package nl.springbank.helper;
 
 import nl.springbank.bean.CardBean;
 
-import java.sql.Date;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -57,8 +57,8 @@ public class CardHelper {
      * @return the expiration date
      */
     public static Date getExpirationDate() {
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = DateHelper.getCalendar();
         calendar.add(Calendar.YEAR, 5);
-        return new Date(calendar.getTimeInMillis());
+        return calendar.getTime();
     }
 }
