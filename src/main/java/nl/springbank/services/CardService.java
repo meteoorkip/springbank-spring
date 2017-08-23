@@ -202,4 +202,11 @@ public class CardService {
     public void deleteCards(Iterable<CardBean> cards) {
         cardDao.delete(cards);
     }
+
+    /**
+     * Delete all cards.
+     */
+    public void deleteCards() {
+        cardDao.deleteAll();
+    }
 }

@@ -132,4 +132,11 @@ public class BankAccountService {
     public void deleteBankAccounts(Iterable<BankAccountBean> bankAccounts) {
         bankAccountDao.delete(bankAccounts);
     }
+
+    /**
+     * Delete all bank accounts.
+     */
+    public void deleteBankAccounts() {
+        bankAccountDao.deleteAll();
+    }
 }

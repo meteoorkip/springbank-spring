@@ -212,4 +212,11 @@ public class TransactionService {
     public void deleteTransactions(Iterable<TransactionBean> transactions) {
         transactionDao.delete(transactions);
     }
+
+    /**
+     * Delete all transactions.
+     */
+    public void deleteTransactions() {
+        transactionDao.deleteAll();
+    }
 }

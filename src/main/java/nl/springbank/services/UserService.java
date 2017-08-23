@@ -263,4 +263,11 @@ public class UserService {
     public void deleteUsers(Iterable<UserBean> users) {
         userDao.delete(users);
     }
+
+    /**
+     * Delete all users.
+     */
+    public void deleteUsers() {
+        userDao.deleteAll();
+    }
 }

@@ -131,4 +131,11 @@ public class IbanService {
     public void deleteIbans(Iterable<IbanBean> ibans) {
         ibanDao.delete(ibans);
     }
+
+    /**
+     * Delete all ibans.
+     */
+    public void deleteIbans() {
+        ibanDao.deleteAll();
+    }
 }
