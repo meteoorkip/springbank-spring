@@ -18,7 +18,7 @@ public class TransactionObject {
         if (transactionBean.getSourceBankAccount() != null) this.sourceIBAN = transactionBean.getSourceBankAccount().getIban().getIban();
         if (transactionBean.getTargetBankAccount() != null) this.targetIBAN = transactionBean.getTargetBankAccount().getIban().getIban();
         this.targetName = transactionBean.getTargetName();
-        this.date = DateHelper.getCalendarDatefromTimestamp(transactionBean.getDate());
+        this.date = transactionBean.getDate().toString();
         this.amount = transactionBean.getAmount();
         this.description = transactionBean.getMessage();
     }

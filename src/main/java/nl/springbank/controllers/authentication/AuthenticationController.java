@@ -25,7 +25,7 @@ public interface AuthenticationController {
      * @throws AuthenticationError The user could not be authenticated. Invalid username, password
      *                             or combination.
      */
-    @JsonRpcErrors({@JsonRpcError(exception = AuthenticationError.class, code = 422)})
+    @JsonRpcErrors(@JsonRpcError(exception = AuthenticationError.class, code = 422))
     AuthenticationObject getAuthToken(
             @JsonRpcParam(value = "username") String username,
             @JsonRpcParam(value = "password") String password

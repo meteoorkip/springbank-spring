@@ -4,6 +4,7 @@ import nl.springbank.bean.BankAccountBean;
 import nl.springbank.bean.TransactionBean;
 import nl.springbank.dao.TransactionDao;
 import nl.springbank.exceptions.InvalidParamValueError;
+import nl.springbank.helper.DateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -102,7 +103,7 @@ public class TransactionService {
         bankAccount.setBalance(bankAccount.getBalance() + amount);
         transaction.setTargetBankAccount(bankAccount);
         transaction.setAmount(amount);
-        transaction.setDate(Timestamp.from(Instant.now()));
+        transaction.setDate(DateHelper.getTime());
         saveTransaction(transaction);
     }
 
@@ -120,7 +121,7 @@ public class TransactionService {
         bankAccount.setBalance(bankAccount.getBalance() - amount);
         transaction.setSourceBankAccount(bankAccount);
         transaction.setAmount(amount);
-        transaction.setDate(Timestamp.from(Instant.now()));
+        transaction.setDate(DateHelper.getTime());
         saveTransaction(transaction);
     }
 
@@ -146,7 +147,7 @@ public class TransactionService {
         transaction.setTargetName(targetName);
         transaction.setAmount(amount);
         transaction.setMessage(description);
-        transaction.setDate(Timestamp.from(Instant.now()));
+        transaction.setDate(DateHelper.getTime());
         saveTransaction(transaction);
     }
 
@@ -210,5 +211,12 @@ public class TransactionService {
      */
     public void deleteTransactions(Iterable<TransactionBean> transactions) {
         transactionDao.delete(transactions);
+    }
+
+    /**
+     * Delete all transactions.
+     */
+    public void deleteTransactions() {
+        transactionDao.deleteAll();
     }
 }

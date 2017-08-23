@@ -1,22 +1,40 @@
 package nl.springbank.helper;
 
 import nl.springbank.exceptions.InvalidParamValueError;
-import sun.util.calendar.CalendarSystem;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.TimeZone;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
- * Converts dates.
- *
  * @author Tristan de Boer
  * @author Sven Konings
  */
 public class DateHelper {
-    private static final String DATE_PATTERN = "yyyy-MM-dd";
+    private static final Calendar calendar = Calendar.getInstance();
+    private static final Date initialTime = calendar.getTime();
+
+    /**
+     * Get the simulated calendar date.
+     *
+     * @return the calendar date
+     */
+    public static Calendar getCalendar() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(getTime());
+        return calendar;
+    }
+
+    /**
+     * Get the simulated date.
+     *
+     * @return the date
+     */
+    public static Date getTime() {
+        return calendar.getTime();
+    }
 
     /**
      * Parse the given string to a date.
@@ -26,22 +44,30 @@ public class DateHelper {
      * @throws InvalidParamValueError if the string couldn't be parsed
      */
     public static Date getDateFromString(String dateString) throws InvalidParamValueError {
-        Date date;
         try {
-            date = new Date(new SimpleDateFormat(DATE_PATTERN).parse(dateString).getTime());
+            return new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US).parse(dateString);
         } catch (ParseException e) {
             throw new InvalidParamValueError(e);
         }
-        return date;
     }
 
     /**
-     * Get the calendar string representation of the given timestamp.
+     * Add the given number of days to the date.
      *
-     * @param timestamp the given timestamp
-     * @return the calendar string representation
+     * @param nrOfDays the given number of days
+     * @throws InvalidParamValueError if the number of days is negative
      */
-    public static String getCalendarDatefromTimestamp(Timestamp timestamp) {
-        return ((Object) CalendarSystem.getGregorianCalendar().getCalendarDate(timestamp.getTime(), TimeZone.getDefault())).toString();
+    public static void addDays(int nrOfDays) throws InvalidParamValueError {
+        if (nrOfDays < 0) {
+            throw new InvalidParamValueError("The number of days can't be negative");
+        }
+        calendar.add(Calendar.DATE, nrOfDays);
+    }
+
+    /**
+     * Reset the date to the original time.
+     */
+    public static void resetDate() {
+        calendar.setTime(initialTime);
     }
 }

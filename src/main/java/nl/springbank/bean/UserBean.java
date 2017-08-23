@@ -1,8 +1,8 @@
 package nl.springbank.bean;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Set;
 
 import static javax.persistence.CascadeType.ALL;

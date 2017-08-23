@@ -7,6 +7,7 @@ import nl.springbank.dao.CardDao;
 import nl.springbank.exceptions.InvalidPINError;
 import nl.springbank.exceptions.InvalidParamValueError;
 import nl.springbank.helper.CardHelper;
+import nl.springbank.helper.DateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -44,6 +45,7 @@ public class CardService {
         } catch (IllegalArgumentException e) {
             throw new InvalidParamValueError(e);
         }
+        checkNotExpired(card);
         return card;
     }
 
@@ -63,7 +65,20 @@ public class CardService {
         } catch (IllegalArgumentException e) {
             throw new InvalidParamValueError(e);
         }
+        checkNotExpired(card);
         return card;
+    }
+
+    /**
+     * Checker whether the given card has not expired.
+     *
+     * @param card the given card
+     * @throws InvalidParamValueError if the card has expired
+     */
+    private void checkNotExpired(CardBean card) throws InvalidParamValueError {
+        if (DateHelper.getTime().after(card.getExpirationDate())) {
+            throw new InvalidParamValueError("Card is expired");
+        }
     }
 
     /**
@@ -201,5 +216,12 @@ public class CardService {
      */
     public void deleteCards(Iterable<CardBean> cards) {
         cardDao.delete(cards);
+    }
+
+    /**
+     * Delete all cards.
+     */
+    public void deleteCards() {
+        cardDao.deleteAll();
     }
 }
