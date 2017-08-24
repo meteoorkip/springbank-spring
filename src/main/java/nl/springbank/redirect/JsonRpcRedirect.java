@@ -9,6 +9,7 @@ import nl.springbank.controllers.authentication.AuthenticationController;
 import nl.springbank.controllers.card.CardController;
 import nl.springbank.controllers.date.DateController;
 import nl.springbank.controllers.info.InfoController;
+import nl.springbank.controllers.overdraft.OverdraftController;
 import nl.springbank.controllers.transfer.TransferController;
 import nl.springbank.helper.jsonrpc.JsonRpcRequest;
 import org.apache.hc.client5.http.impl.sync.CloseableHttpClient;
@@ -55,16 +56,18 @@ public class JsonRpcRedirect {
     private final CardController cardController;
     private final DateController dateController;
     private final InfoController infoController;
+    private final OverdraftController overdraftController;
     private final TransferController transferController;
 
     @Autowired
-    public JsonRpcRedirect(AccessController accessController, AccountController accountController, AuthenticationController authenticationController, CardController cardController, DateController dateController, InfoController infoController, TransferController transferController) {
+    public JsonRpcRedirect(AccessController accessController, AccountController accountController, AuthenticationController authenticationController, CardController cardController, DateController dateController, InfoController infoController, OverdraftController overdraftController, TransferController transferController) {
         this.accessController = accessController;
         this.accountController = accountController;
         this.authenticationController = authenticationController;
         this.cardController = cardController;
         this.dateController = dateController;
         this.infoController = infoController;
+        this.overdraftController = overdraftController;
         this.transferController = transferController;
     }
 

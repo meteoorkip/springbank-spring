@@ -88,14 +88,33 @@ public class BankAccountService {
     }
 
     /**
-     * Check if the given bank account has a positive amount.
+     * Closes the given bank account.
      *
      * @param bankAccount the given bank account
      * @throws InvalidParamValueError if the amount is negative
      */
-    public void checkAmount(BankAccountBean bankAccount) throws InvalidParamValueError {
+    public void closeBankAccount(BankAccountBean bankAccount) throws InvalidParamValueError {
         if (bankAccount.getBalance() < 0) {
             throw new InvalidParamValueError("The specified bank account has a negative amount");
+        }
+        deleteBankAccount(bankAccount);
+    }
+
+    /**
+     * Sets the overdraft limit of the given bank account.
+     *
+     * @param bankAccount    the given bank account
+     * @param overdraftLimit the overdraft limit
+     * @throws InvalidParamValueError if the overdraft limit is invalid
+     */
+    public void setOverdraftLimit(BankAccountBean bankAccount, int overdraftLimit) throws InvalidParamValueError {
+        if (overdraftLimit < 0) {
+            throw new InvalidParamValueError("Overdraft can't be negative");
+        } else if (overdraftLimit > 5000) {
+            throw new InvalidParamValueError("The maximum overdraft is 5000");
+        } else {
+            bankAccount.setOverdraftLimit(overdraftLimit);
+            saveBankAccount(bankAccount);
         }
     }
 
