@@ -6,6 +6,7 @@ import nl.springbank.bean.UserBean;
 import nl.springbank.dao.CardDao;
 import nl.springbank.exceptions.InvalidPINError;
 import nl.springbank.exceptions.InvalidParamValueError;
+import nl.springbank.exceptions.NoEffectError;
 import nl.springbank.helper.CardHelper;
 import nl.springbank.helper.DateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,13 +107,20 @@ public class CardService {
     /**
      * Check if the pin code of the given card is correct.
      *
-     * @param cardBean the given card
-     * @param pinCode  the pin code
+     * @param card    the given card
+     * @param pinCode the pin code
      * @throws InvalidPINError if the pin code is incorrect
      */
-    public void checkPin(CardBean cardBean, String pinCode) throws InvalidPINError {
-        if (!cardBean.getPin().equals(pinCode)) {
+    public void checkPin(CardBean card, String pinCode) throws InvalidPINError {
+        if (card.getAttempts() >= 3) {
+            throw new InvalidPINError("The card is blocked");
+        } else if (!card.getPin().equals(pinCode)) {
+            card.setAttempts(card.getAttempts() + 1);
+            saveCard(card);
             throw new InvalidPINError("Invalid pin code");
+        } else if (card.getAttempts() > 0) {
+            card.setAttempts(0);
+            saveCard(card);
         }
     }
 
@@ -142,6 +150,7 @@ public class CardService {
         card.setCardNumber(CardHelper.getRandomCardNumber(getCards()));
         card.setPin(pin);
         card.setExpirationDate(CardHelper.getExpirationDate());
+        card.setAttempts(0);
         return saveCard(card);
     }
 
@@ -159,6 +168,20 @@ public class CardService {
         } else {
             return newCard(card.getBankAccount(), card.getUser(), card.getPin());
         }
+    }
+
+    /**
+     * Unblock the given card.
+     *
+     * @param card the given card.
+     * @throws NoEffectError if the card is already unblocked
+     */
+    public void unblockCard(CardBean card) throws NoEffectError {
+        if (card.getAttempts() < 3) {
+            throw new NoEffectError("The card is already unblocked");
+        }
+        card.setAttempts(0);
+        saveCard(card);
     }
 
     /**

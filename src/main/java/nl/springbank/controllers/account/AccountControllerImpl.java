@@ -71,14 +71,4 @@ public class AccountControllerImpl implements AccountController {
             userService.deleteUser(user);
         }
     }
-
-    @Override
-    public OpenedCardObject invalidateCard(String authToken, String iBAN, String pinCard, boolean newPin) throws InvalidParamValueError, NotAuthorizedError {
-        BankAccountBean bankAccount = bankAccountService.getBankAccount(iBAN);
-        CardBean card = cardService.getCard(bankAccount, pinCard);
-        userService.checkCardOwner(card, authToken);
-        transactionService.newWithdrawal(bankAccount, 7.5);
-        CardBean newCard = cardService.invalidateCard(card, newPin);
-        return new OpenedCardObject(newCard, newPin);
-    }
 }

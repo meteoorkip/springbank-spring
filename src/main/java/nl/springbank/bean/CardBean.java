@@ -46,6 +46,10 @@ public class CardBean {
     @Column(name = "expiration_date")
     private Date expirationDate;
 
+    /** The number of incorrect attempts. */
+    @Column(name = "attempts")
+    private Integer attempts;
+
     /*
      * Bean methods
      */
@@ -97,6 +101,14 @@ public class CardBean {
         this.expirationDate = expirationDate;
     }
 
+    public Integer getAttempts() {
+        return attempts;
+    }
+
+    public void setAttempts(Integer attempts) {
+        this.attempts = attempts;
+    }
+
     @Override
     public String toString() {
         return "CardBean{" +
@@ -106,6 +118,7 @@ public class CardBean {
                 ", cardNumber='" + cardNumber + '\'' +
                 ", pin='" + pin + '\'' +
                 ", expirationDate=" + expirationDate +
+                ", attempts=" + attempts +
                 '}';
     }
 }
