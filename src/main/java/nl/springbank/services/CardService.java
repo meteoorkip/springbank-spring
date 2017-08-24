@@ -6,6 +6,7 @@ import nl.springbank.bean.UserBean;
 import nl.springbank.dao.CardDao;
 import nl.springbank.exceptions.InvalidPINError;
 import nl.springbank.exceptions.InvalidParamValueError;
+import nl.springbank.exceptions.NoEffectError;
 import nl.springbank.helper.CardHelper;
 import nl.springbank.helper.DateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,6 +118,9 @@ public class CardService {
             card.setAttempts(card.getAttempts() + 1);
             saveCard(card);
             throw new InvalidPINError("Invalid pin code");
+        } else if (card.getAttempts() > 0) {
+            card.setAttempts(0);
+            saveCard(card);
         }
     }
 
@@ -164,6 +168,20 @@ public class CardService {
         } else {
             return newCard(card.getBankAccount(), card.getUser(), card.getPin());
         }
+    }
+
+    /**
+     * Unblock the given card.
+     *
+     * @param card the given card.
+     * @throws NoEffectError if the card is already unblocked
+     */
+    public void unblockCard(CardBean card) throws NoEffectError {
+        if (card.getAttempts() < 3) {
+            throw new NoEffectError("The card is already unblocked");
+        }
+        card.setAttempts(0);
+        saveCard(card);
     }
 
     /**

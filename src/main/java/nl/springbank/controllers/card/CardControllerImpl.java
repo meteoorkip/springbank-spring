@@ -46,6 +46,9 @@ public class CardControllerImpl implements CardController {
 
     @Override
     public void unblockCard(String authToken, String iBAN, String pinCard) throws InvalidParamValueError, NotAuthorizedError, NoEffectError {
-
+        BankAccountBean bankAccount = bankAccountService.getBankAccount(iBAN);
+        CardBean card = cardService.getCard(bankAccount, pinCard);
+        userService.checkCardOwner(card, authToken);
+        cardService.unblockCard(card);
     }
 }
