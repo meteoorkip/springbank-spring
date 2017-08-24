@@ -83,6 +83,8 @@ public class BankAccountService {
         bankAccount.setHolder(user);
         bankAccount.setAccessUsers(Collections.singleton(user));
         bankAccount.setBalance(0.0);
+        bankAccount.setMinimumBalance(0.0);
+        bankAccount.setInterest(0.0);
         bankAccount.setOverdraftLimit(0);
         return saveBankAccount(bankAccount);
     }
@@ -116,6 +118,32 @@ public class BankAccountService {
             bankAccount.setOverdraftLimit(overdraftLimit);
             saveBankAccount(bankAccount);
         }
+    }
+
+    /**
+     * Add the daily interest based on the daily rate.
+     *
+     * @param dailyRate the daily rate
+     */
+    public void addDailyInterest(double dailyRate) {
+        for (BankAccountBean bankAccount : getBankAccounts()) {
+            if (bankAccount.getMinimumBalance() < 0) {
+                double dailyInterest = Math.abs(bankAccount.getMinimumBalance()) * dailyRate;
+                bankAccount.setInterest(bankAccount.getInterest() + dailyInterest);
+            }
+            bankAccount.setMinimumBalance(bankAccount.getBalance());
+            saveBankAccount(bankAccount);
+        }
+    }
+
+    /**
+     * Reset the interest of the given bank account.
+     *
+     * @param bankAccount the given bank account
+     */
+    public void resetInterest(BankAccountBean bankAccount) {
+        bankAccount.setInterest(0.0);
+        saveBankAccount(bankAccount);
     }
 
     /**
