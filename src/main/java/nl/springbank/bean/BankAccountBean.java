@@ -35,6 +35,18 @@ public class BankAccountBean {
     @Column(name = "balance")
     private Double balance;
 
+    /** The daily minimum balance of the account. */
+    @Column(name = "minimum_balance")
+    private Double minimumBalance;
+
+    /** The built-up interest of the account. Whitdrawn each month */
+    @Column(name = "interest")
+    private Double interest;
+
+    /** The overdraft limit of the account. */
+    @Column(name = "overdraft_limit")
+    private Integer overdraftLimit;
+
     /*
      * Mapped values
      */
@@ -89,7 +101,34 @@ public class BankAccountBean {
     }
 
     public void setBalance(Double balance) {
+        if (balance < getMinimumBalance()) {
+            setMinimumBalance(balance);
+        }
         this.balance = balance;
+    }
+
+    public Double getMinimumBalance() {
+        return minimumBalance;
+    }
+
+    public void setMinimumBalance(Double minimumBalance) {
+        this.minimumBalance = minimumBalance;
+    }
+
+    public Double getInterest() {
+        return interest;
+    }
+
+    public void setInterest(Double interest) {
+        this.interest = interest;
+    }
+
+    public Integer getOverdraftLimit() {
+        return overdraftLimit;
+    }
+
+    public void setOverdraftLimit(Integer overdraftLimit) {
+        this.overdraftLimit = overdraftLimit;
     }
 
     public IbanBean getIban() {
@@ -138,6 +177,9 @@ public class BankAccountBean {
                 "bankAccountId=" + bankAccountId +
                 ", holder=" + holder +
                 ", balance=" + balance +
+                ", minimumBalance=" + minimumBalance +
+                ", interest=" + interest +
+                ", overdraftLimit=" + overdraftLimit +
                 '}';
     }
 }

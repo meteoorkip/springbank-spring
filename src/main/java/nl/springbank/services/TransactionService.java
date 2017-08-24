@@ -161,8 +161,8 @@ public class TransactionService {
     private void checkAmount(BankAccountBean bankAccount, double amount) throws InvalidParamValueError {
         if (amount < 0) {
             throw new InvalidParamValueError("Amount less than zero: " + amount);
-        } else if (amount > bankAccount.getBalance()) {
-            throw new InvalidParamValueError("Amount more than account balance: " + amount);
+        } else if (amount > bankAccount.getBalance() + bankAccount.getOverdraftLimit()) {
+            throw new InvalidParamValueError("Amount more than available money");
         }
     }
 

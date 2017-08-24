@@ -13,13 +13,22 @@ import java.util.Locale;
  * @author Sven Konings
  */
 public class DateHelper {
-    private static final Calendar calendar = Calendar.getInstance();
-    private static final Date initialTime = calendar.getTime();
+    private static final Calendar CALENDAR = Calendar.getInstance();
+    private static final Date INITIAL_TIME = CALENDAR.getTime();
 
     /**
-     * Get the simulated calendar date.
+     * Get the simulatid calendar.
      *
-     * @return the calendar date
+     * @return the calendar
+     */
+    public static Calendar getSystemCalendar() {
+        return CALENDAR;
+    }
+
+    /**
+     * Get a copy of the simulated calendar.
+     *
+     * @return the calendar
      */
     public static Calendar getCalendar() {
         Calendar calendar = Calendar.getInstance();
@@ -33,7 +42,7 @@ public class DateHelper {
      * @return the date
      */
     public static Date getTime() {
-        return calendar.getTime();
+        return CALENDAR.getTime();
     }
 
     /**
@@ -52,22 +61,9 @@ public class DateHelper {
     }
 
     /**
-     * Add the given number of days to the date.
-     *
-     * @param nrOfDays the given number of days
-     * @throws InvalidParamValueError if the number of days is negative
-     */
-    public static void addDays(int nrOfDays) throws InvalidParamValueError {
-        if (nrOfDays < 0) {
-            throw new InvalidParamValueError("The number of days can't be negative");
-        }
-        calendar.add(Calendar.DATE, nrOfDays);
-    }
-
-    /**
      * Reset the date to the original time.
      */
     public static void resetDate() {
-        calendar.setTime(initialTime);
+        CALENDAR.setTime(INITIAL_TIME);
     }
 }

@@ -83,7 +83,67 @@ public class BankAccountService {
         bankAccount.setHolder(user);
         bankAccount.setAccessUsers(Collections.singleton(user));
         bankAccount.setBalance(0.0);
+        bankAccount.setMinimumBalance(0.0);
+        bankAccount.setInterest(0.0);
+        bankAccount.setOverdraftLimit(0);
         return saveBankAccount(bankAccount);
+    }
+
+    /**
+     * Closes the given bank account.
+     *
+     * @param bankAccount the given bank account
+     * @throws InvalidParamValueError if the amount is negative
+     */
+    public void closeBankAccount(BankAccountBean bankAccount) throws InvalidParamValueError {
+        if (bankAccount.getBalance() < 0) {
+            throw new InvalidParamValueError("The specified bank account has a negative amount");
+        }
+        deleteBankAccount(bankAccount);
+    }
+
+    /**
+     * Sets the overdraft limit of the given bank account.
+     *
+     * @param bankAccount    the given bank account
+     * @param overdraftLimit the overdraft limit
+     * @throws InvalidParamValueError if the overdraft limit is invalid
+     */
+    public void setOverdraftLimit(BankAccountBean bankAccount, int overdraftLimit) throws InvalidParamValueError {
+        if (overdraftLimit < 0) {
+            throw new InvalidParamValueError("Overdraft can't be negative");
+        } else if (overdraftLimit > 5000) {
+            throw new InvalidParamValueError("The maximum overdraft is 5000");
+        } else {
+            bankAccount.setOverdraftLimit(overdraftLimit);
+            saveBankAccount(bankAccount);
+        }
+    }
+
+    /**
+     * Add the daily interest based on the daily rate.
+     *
+     * @param dailyRate the daily rate
+     */
+    public void addDailyInterest(double dailyRate) {
+        for (BankAccountBean bankAccount : getBankAccounts()) {
+            if (bankAccount.getMinimumBalance() < 0) {
+                double dailyInterest = Math.abs(bankAccount.getMinimumBalance()) * dailyRate;
+                bankAccount.setInterest(bankAccount.getInterest() + dailyInterest);
+            }
+            bankAccount.setMinimumBalance(bankAccount.getBalance());
+            saveBankAccount(bankAccount);
+        }
+    }
+
+    /**
+     * Reset the interest of the given bank account.
+     *
+     * @param bankAccount the given bank account
+     */
+    public void resetInterest(BankAccountBean bankAccount) {
+        bankAccount.setInterest(0.0);
+        saveBankAccount(bankAccount);
     }
 
     /**
