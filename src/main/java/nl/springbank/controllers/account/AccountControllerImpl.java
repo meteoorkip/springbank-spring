@@ -8,7 +8,6 @@ import nl.springbank.bean.UserBean;
 import nl.springbank.exceptions.InvalidParamValueError;
 import nl.springbank.exceptions.NotAuthorizedError;
 import nl.springbank.objects.OpenedAccountObject;
-import nl.springbank.objects.OpenedCardObject;
 import nl.springbank.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -65,6 +64,7 @@ public class AccountControllerImpl implements AccountController {
         UserBean user = userService.getUserByAuth(authToken);
         BankAccountBean bankAccount = bankAccountService.getBankAccount(iBAN);
         userService.checkHolder(bankAccount, user);
+        bankAccountService.checkAmount(bankAccount);
         bankAccountService.deleteBankAccount(bankAccount);
         user = userService.getUserByAuth(authToken);
         if (user.getHolderAccounts().isEmpty()) {

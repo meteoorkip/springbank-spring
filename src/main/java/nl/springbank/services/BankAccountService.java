@@ -83,7 +83,20 @@ public class BankAccountService {
         bankAccount.setHolder(user);
         bankAccount.setAccessUsers(Collections.singleton(user));
         bankAccount.setBalance(0.0);
+        bankAccount.setOverdraftLimit(0);
         return saveBankAccount(bankAccount);
+    }
+
+    /**
+     * Check if the given bank account has a positive amount.
+     *
+     * @param bankAccount the given bank account
+     * @throws InvalidParamValueError if the amount is negative
+     */
+    public void checkAmount(BankAccountBean bankAccount) throws InvalidParamValueError {
+        if (bankAccount.getBalance() < 0) {
+            throw new InvalidParamValueError("The specified bank account has a negative amount");
+        }
     }
 
     /**

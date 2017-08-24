@@ -6,6 +6,7 @@ import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceImpl;
 import nl.springbank.controllers.access.AccessController;
 import nl.springbank.controllers.account.AccountController;
 import nl.springbank.controllers.authentication.AuthenticationController;
+import nl.springbank.controllers.card.CardController;
 import nl.springbank.controllers.date.DateController;
 import nl.springbank.controllers.info.InfoController;
 import nl.springbank.controllers.transfer.TransferController;
@@ -51,15 +52,17 @@ public class JsonRpcRedirect {
     private final AccessController accessController;
     private final AccountController accountController;
     private final AuthenticationController authenticationController;
+    private final CardController cardController;
     private final DateController dateController;
     private final InfoController infoController;
     private final TransferController transferController;
 
     @Autowired
-    public JsonRpcRedirect(AccessController accessController, AccountController accountController, AuthenticationController authenticationController, DateController dateController, InfoController infoController, TransferController transferController) {
+    public JsonRpcRedirect(AccessController accessController, AccountController accountController, AuthenticationController authenticationController, CardController cardController, DateController dateController, InfoController infoController, TransferController transferController) {
         this.accessController = accessController;
         this.accountController = accountController;
         this.authenticationController = authenticationController;
+        this.cardController = cardController;
         this.dateController = dateController;
         this.infoController = infoController;
         this.transferController = transferController;

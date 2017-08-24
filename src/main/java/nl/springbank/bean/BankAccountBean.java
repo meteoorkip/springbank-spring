@@ -35,6 +35,10 @@ public class BankAccountBean {
     @Column(name = "balance")
     private Double balance;
 
+    /** The overdraft limit of the account. */
+    @Column(name = "overdraft_limit")
+    private Integer overdraftLimit;
+
     /*
      * Mapped values
      */
@@ -92,6 +96,14 @@ public class BankAccountBean {
         this.balance = balance;
     }
 
+    public Integer getOverdraftLimit() {
+        return overdraftLimit;
+    }
+
+    public void setOverdraftLimit(Integer overdraftLimit) {
+        this.overdraftLimit = overdraftLimit;
+    }
+
     public IbanBean getIban() {
         return iban;
     }
@@ -138,6 +150,7 @@ public class BankAccountBean {
                 "bankAccountId=" + bankAccountId +
                 ", holder=" + holder +
                 ", balance=" + balance +
+                ", overdraftLimit=" + overdraftLimit +
                 '}';
     }
 }
