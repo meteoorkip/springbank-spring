@@ -106,12 +106,16 @@ public class CardService {
     /**
      * Check if the pin code of the given card is correct.
      *
-     * @param cardBean the given card
-     * @param pinCode  the pin code
+     * @param card    the given card
+     * @param pinCode the pin code
      * @throws InvalidPINError if the pin code is incorrect
      */
-    public void checkPin(CardBean cardBean, String pinCode) throws InvalidPINError {
-        if (!cardBean.getPin().equals(pinCode)) {
+    public void checkPin(CardBean card, String pinCode) throws InvalidPINError {
+        if (card.getAttempts() >= 3) {
+            throw new InvalidPINError("The card is blocked");
+        } else if (!card.getPin().equals(pinCode)) {
+            card.setAttempts(card.getAttempts() + 1);
+            saveCard(card);
             throw new InvalidPINError("Invalid pin code");
         }
     }
@@ -142,6 +146,7 @@ public class CardService {
         card.setCardNumber(CardHelper.getRandomCardNumber(getCards()));
         card.setPin(pin);
         card.setExpirationDate(CardHelper.getExpirationDate());
+        card.setAttempts(0);
         return saveCard(card);
     }
 
