@@ -1,7 +1,7 @@
 package nl.springbank.objects;
 
+import nl.springbank.bean.AccountBean;
 import nl.springbank.bean.CardBean;
-import nl.springbank.bean.IbanBean;
 
 /**
  * @author Tristan de Boer
@@ -10,9 +10,9 @@ import nl.springbank.bean.IbanBean;
 public class OpenedAccountObject extends OpenedCardObject {
     private String iBAN;
 
-    public OpenedAccountObject(IbanBean ibanBean, CardBean cardBean) {
-        super(cardBean);
-        this.iBAN = ibanBean.getIban();
+    public OpenedAccountObject(AccountBean account, CardBean card) {
+        super(card);
+        this.iBAN = account.getIban();
     }
 
     public String getiBAN() {

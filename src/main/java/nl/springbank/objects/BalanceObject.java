@@ -1,6 +1,6 @@
 package nl.springbank.objects;
 
-import nl.springbank.bean.BankAccountBean;
+import nl.springbank.bean.AccountBean;
 
 /**
  * @author Tristan de Boer
@@ -9,8 +9,8 @@ import nl.springbank.bean.BankAccountBean;
 public class BalanceObject {
     private double balance;
 
-    public BalanceObject(BankAccountBean bankAccountBean) {
-        this.balance = bankAccountBean.getBalance();
+    public BalanceObject(AccountBean account) {
+        this.balance = account.getBalance();
     }
 
     public double getBalance() {

@@ -12,16 +12,16 @@ public class OpenedCardObject {
     private String pinCode;
     private String expirationDate;
 
-    public OpenedCardObject(CardBean cardBean) {
-        this(cardBean, true);
+    public OpenedCardObject(CardBean card) {
+        this(card, true);
     }
 
-    public OpenedCardObject(CardBean cardBean, boolean newPin) {
-        this.pinCard = cardBean.getCardNumber();
+    public OpenedCardObject(CardBean card, boolean newPin) {
+        this.pinCard = card.getCardNumber();
         if (!newPin) {
-            this.pinCode = cardBean.getPin();
+            this.pinCode = card.getPin();
         }
-        this.expirationDate = cardBean.getExpirationDate().toString();
+        this.expirationDate = card.getExpirationDate().toString();
     }
 
     public String getPinCard() {
