@@ -1,6 +1,7 @@
 package nl.springbank.services;
 
 import nl.springbank.bean.AccountBean;
+import nl.springbank.bean.SavingsAccountBean;
 import nl.springbank.bean.TransactionBean;
 import nl.springbank.dao.TransactionDao;
 import nl.springbank.exceptions.InvalidParamValueError;
@@ -149,6 +150,7 @@ public class TransactionService {
         if (amount == 0) {
             return;
         }
+        checkTransaction(sourceAccount, targetAccount);
         checkAmount(sourceAccount, amount);
         sourceAccount.setBalance(sourceAccount.getBalance() - amount);
         targetAccount.setBalance(targetAccount.getBalance() + amount);
@@ -161,6 +163,21 @@ public class TransactionService {
         transaction.setMessage(description);
         transaction.setDate(DateHelper.getTime());
         saveTransaction(transaction);
+    }
+
+    /**
+     * Check if the transactions between the given source and target account is valid.
+     *
+     * @param sourceAccount the given source account
+     * @param targetAccount the given target account
+     * @throws InvalidParamValueError if the transaction is invalid
+     */
+    private void checkTransaction(AccountBean sourceAccount, AccountBean targetAccount) throws InvalidParamValueError {
+        if (sourceAccount instanceof SavingsAccountBean && !((SavingsAccountBean) sourceAccount).getCheckingAccount().equals(targetAccount)) {
+            throw new InvalidParamValueError("Transactions from savings accounts can only be made to the corresponding checkings account");
+        } else if (targetAccount instanceof SavingsAccountBean && !((SavingsAccountBean) targetAccount).getCheckingAccount().equals(sourceAccount)) {
+            throw new InvalidParamValueError("Transactions to savings accounts can only be made from the corresponding checkings account");
+        }
     }
 
     /**
