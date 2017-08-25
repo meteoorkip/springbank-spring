@@ -1,9 +1,11 @@
 package nl.springbank.bean;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.Set;
 import java.util.SortedSet;
 
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.GenerationType.AUTO;
 import static javax.persistence.InheritanceType.JOINED;
 
@@ -44,6 +46,23 @@ public abstract class AccountBean {
     /** The overdraft limit of the account. */
     @Column(name = "overdraft_limit")
     protected int overdraftLimit;
+
+    /*
+     * Mapped values
+     */
+    /** The cards associated with the account. */
+    @OneToMany(mappedBy = "account", cascade = ALL, orphanRemoval = true)
+    private Set<CardBean> cards = Collections.emptySet();
+
+    /** The transactions with the account as the source. */
+    @OneToMany(mappedBy = "sourceAccount")
+    @OrderBy("date DESC")
+    private SortedSet<TransactionBean> sourceTransactions = Collections.emptySortedSet();
+
+    /** The transactions with the account as the target. */
+    @OneToMany(mappedBy = "targetAccount")
+    @OrderBy("date DESC")
+    private SortedSet<TransactionBean> targetTransactions = Collections.emptySortedSet();
 
     /*
      * Bean methods
@@ -99,6 +118,30 @@ public abstract class AccountBean {
         this.overdraftLimit = overdraftLimit;
     }
 
+    public Set<CardBean> getCards() {
+        return cards;
+    }
+
+    public void setCards(Set<CardBean> cards) {
+        this.cards = cards;
+    }
+
+    public SortedSet<TransactionBean> getSourceTransactions() {
+        return sourceTransactions;
+    }
+
+    public void setSourceTransactions(SortedSet<TransactionBean> sourceTransactions) {
+        this.sourceTransactions = sourceTransactions;
+    }
+
+    public SortedSet<TransactionBean> getTargetTransactions() {
+        return targetTransactions;
+    }
+
+    public void setTargetTransactions(SortedSet<TransactionBean> targetTransactions) {
+        this.targetTransactions = targetTransactions;
+    }
+
     /*
      * Abstract methods
      */
@@ -109,16 +152,4 @@ public abstract class AccountBean {
     public abstract Set<UserBean> getAccessUsers();
 
     public abstract void setAccessUsers(Set<UserBean> accessUsers);
-
-    public abstract Set<CardBean> getCards();
-
-    public abstract void setCards(Set<CardBean> cards);
-
-    public abstract SortedSet<TransactionBean> getSourceTransactions();
-
-    public abstract void setSourceTransactions(SortedSet<TransactionBean> sourceTransactions);
-
-    public abstract SortedSet<TransactionBean> getTargetTransactions();
-
-    public abstract void setTargetTransactions(SortedSet<TransactionBean> targetTransactions);
 }

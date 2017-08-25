@@ -27,8 +27,8 @@ public class CardBean {
 
     /** The checking account associated with the card. */
     @ManyToOne
-    @JoinColumn(name = "checking_account_id")
-    private CheckingAccountBean checkingAccount;
+    @JoinColumn(name = "account_id")
+    private AccountBean account;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -61,12 +61,12 @@ public class CardBean {
         this.cardId = cardId;
     }
 
-    public CheckingAccountBean getCheckingAccount() {
-        return checkingAccount;
+    public AccountBean getAccount() {
+        return account;
     }
 
-    public void setCheckingAccount(CheckingAccountBean checkingAccount) {
-        this.checkingAccount = checkingAccount;
+    public void setAccount(AccountBean account) {
+        this.account = account;
     }
 
     public UserBean getUser() {

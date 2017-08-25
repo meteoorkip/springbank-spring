@@ -3,7 +3,6 @@ package nl.springbank.bean;
 import javax.persistence.*;
 import java.util.Collections;
 import java.util.Set;
-import java.util.SortedSet;
 
 import static javax.persistence.CascadeType.ALL;
 
@@ -41,20 +40,6 @@ public class CheckingAccountBean extends AccountBean {
     )
     private Set<UserBean> accessUsers = Collections.emptySet();
 
-    /** The cards associated with the account. */
-    @OneToMany(mappedBy = "checkingAccount", cascade = ALL, orphanRemoval = true)
-    private Set<CardBean> cards = Collections.emptySet();
-
-    /** The transactions with the account as the source. */
-    @OneToMany(mappedBy = "sourceAccount")
-    @OrderBy("date DESC")
-    private SortedSet<TransactionBean> sourceTransactions = Collections.emptySortedSet();
-
-    /** The transactions with the account as the target. */
-    @OneToMany(mappedBy = "targetAccount")
-    @OrderBy("date DESC")
-    private SortedSet<TransactionBean> targetTransactions = Collections.emptySortedSet();
-
     /*
      * Bean methods
      */
@@ -84,35 +69,5 @@ public class CheckingAccountBean extends AccountBean {
     @Override
     public void setAccessUsers(Set<UserBean> accessUsers) {
         this.accessUsers = accessUsers;
-    }
-
-    @Override
-    public Set<CardBean> getCards() {
-        return cards;
-    }
-
-    @Override
-    public void setCards(Set<CardBean> cards) {
-        this.cards = cards;
-    }
-
-    @Override
-    public SortedSet<TransactionBean> getSourceTransactions() {
-        return sourceTransactions;
-    }
-
-    @Override
-    public void setSourceTransactions(SortedSet<TransactionBean> sourceTransactions) {
-        this.sourceTransactions = sourceTransactions;
-    }
-
-    @Override
-    public SortedSet<TransactionBean> getTargetTransactions() {
-        return targetTransactions;
-    }
-
-    @Override
-    public void setTargetTransactions(SortedSet<TransactionBean> targetTransactions) {
-        this.targetTransactions = targetTransactions;
     }
 }

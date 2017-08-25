@@ -1,7 +1,7 @@
 package nl.springbank.services;
 
+import nl.springbank.bean.AccountBean;
 import nl.springbank.bean.CardBean;
-import nl.springbank.bean.CheckingAccountBean;
 import nl.springbank.bean.UserBean;
 import nl.springbank.dao.CardDao;
 import nl.springbank.exceptions.InvalidPINError;
@@ -51,17 +51,17 @@ public class CardService {
     }
 
     /**
-     * Get the card with the given checking account and card number.
+     * Get the card with the given account and card number.
      *
-     * @param checkingAccount the given checking account
-     * @param cardNumber      the given card number
+     * @param account    the given account
+     * @param cardNumber the given card number
      * @return the card
      * @throws InvalidParamValueError if an error occurred or the card doesn't exist
      */
-    public CardBean getCard(CheckingAccountBean checkingAccount, String cardNumber) throws InvalidParamValueError {
+    public CardBean getCard(AccountBean account, String cardNumber) throws InvalidParamValueError {
         CardBean card;
         try {
-            card = cardDao.findByCheckingAccountAndCardNumber(checkingAccount, cardNumber);
+            card = cardDao.findByAccountAndCardNumber(account, cardNumber);
             Assert.notNull(card, "Card not found");
         } catch (IllegalArgumentException e) {
             throw new InvalidParamValueError(e);
@@ -92,16 +92,16 @@ public class CardService {
     }
 
     /**
-     * Check if the pin code of the card beloning to the given checking account and card number is correct.
+     * Check if the pin code of the card beloning to the given account and card number is correct.
      *
-     * @param checkingAccount the given checking account
-     * @param cardNumber      the given card number
-     * @param pinCode         the pin code
-     * @throws InvalidParamValueError if the checking account-card number combination is incorrect
+     * @param account    the given account
+     * @param cardNumber the given card number
+     * @param pinCode    the pin code
+     * @throws InvalidParamValueError if the account-card number combination is incorrect
      * @throws InvalidPINError        if the pin code is incorrect
      */
-    public void checkPin(CheckingAccountBean checkingAccount, String cardNumber, String pinCode) throws InvalidParamValueError, InvalidPINError {
-        checkPin(getCard(checkingAccount, cardNumber), pinCode);
+    public void checkPin(AccountBean account, String cardNumber, String pinCode) throws InvalidParamValueError, InvalidPINError {
+        checkPin(getCard(account, cardNumber), pinCode);
     }
 
     /**
@@ -125,27 +125,27 @@ public class CardService {
     }
 
     /**
-     * Create a new card with the given checking account and user.
+     * Create a new card with the given account and user.
      *
-     * @param checkingAccount the given checking account
-     * @param user            the given user
+     * @param account the given account
+     * @param user    the given user
      * @return the created card
      */
-    public CardBean newCard(CheckingAccountBean checkingAccount, UserBean user) {
-        return newCard(checkingAccount, user, CardHelper.getRandomPin());
+    public CardBean newCard(AccountBean account, UserBean user) {
+        return newCard(account, user, CardHelper.getRandomPin());
     }
 
     /**
-     * Create a new card with the given checking account, user and pin.
+     * Create a new card with the given account, user and pin.
      *
-     * @param checkingAccount the given checking account
-     * @param user            the given user
-     * @param pin             the given pin
+     * @param account the given account
+     * @param user    the given user
+     * @param pin     the given pin
      * @return the created card
      */
-    public synchronized CardBean newCard(CheckingAccountBean checkingAccount, UserBean user, String pin) {
+    public synchronized CardBean newCard(AccountBean account, UserBean user, String pin) {
         CardBean card = new CardBean();
-        card.setCheckingAccount(checkingAccount);
+        card.setAccount(account);
         card.setUser(user);
         card.setCardNumber(CardHelper.getRandomCardNumber(getCards()));
         card.setPin(pin);
@@ -163,9 +163,9 @@ public class CardService {
     public synchronized CardBean invalidateCard(CardBean card, boolean newPin) {
         deleteCard(card);
         if (newPin) {
-            return newCard(card.getCheckingAccount(), card.getUser());
+            return newCard(card.getAccount(), card.getUser());
         } else {
-            return newCard(card.getCheckingAccount(), card.getUser(), card.getPin());
+            return newCard(card.getAccount(), card.getUser(), card.getPin());
         }
     }
 
@@ -222,13 +222,13 @@ public class CardService {
     }
 
     /**
-     * Delete the card belonging to the given checking account and user.
+     * Delete the card belonging to the given account and user.
      *
-     * @param checkingAccount the given checking account
-     * @param user            the given user
+     * @param account the given account
+     * @param user    the given user
      */
-    public void deleteCard(CheckingAccountBean checkingAccount, UserBean user) {
-        cardDao.deleteByCheckingAccountAndUser(checkingAccount, user);
+    public void deleteCard(AccountBean account, UserBean user) {
+        cardDao.deleteByAccountAndUser(account, user);
     }
 
     /**
