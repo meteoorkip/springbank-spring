@@ -26,7 +26,7 @@ public interface CardDao extends JpaRepository<CardBean, Long> {
     /**
      * Delete the cards with the given checking account and user.
      *
-     * @param checkingAccount the given bank account
+     * @param checkingAccount the given checking account
      * @param user            the given user
      */
     void deleteByCheckingAccountAndUser(CheckingAccountBean checkingAccount, UserBean user);

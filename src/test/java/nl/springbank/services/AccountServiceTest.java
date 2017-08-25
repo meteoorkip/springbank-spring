@@ -1,6 +1,6 @@
 package nl.springbank.services;
 
-import nl.springbank.bean.BankAccountBean;
+import nl.springbank.bean.CheckingAccountBean;
 import nl.springbank.bean.UserBean;
 import nl.springbank.exceptions.InvalidParamValueError;
 import org.junit.Test;
@@ -48,7 +48,7 @@ public class BankAccountServiceTest {
     @Test
     public void testNewBankAccount() throws Exception {
         UserBean user = userService.getUser(1);
-        BankAccountBean bankAccount = bankAccountService.newBankAccount(user);
+        CheckingAccountBean bankAccount = bankAccountService.newBankAccount(user);
         assertNotNull(bankAccount);
         assertEquals(bankAccount.getHolder(), user);
         assertEquals(bankAccount.getBalance(), 0, 0);
@@ -63,7 +63,7 @@ public class BankAccountServiceTest {
 
     @Test
     public void testDeleteBankAccount() throws Exception {
-        BankAccountBean bankAccount = bankAccountService.getBankAccount("NL83SPRI0114480386");
+        CheckingAccountBean bankAccount = bankAccountService.getBankAccount("NL83SPRI0114480386");
         bankAccountService.deleteBankAccount(bankAccount);
         try {
             bankAccountService.getBankAccount("NL83SPRI0114480386");

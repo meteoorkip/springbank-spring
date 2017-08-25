@@ -31,19 +31,19 @@ public abstract class AccountBean {
 
     /** The balance on the account. */
     @Column(name = "balance")
-    protected Double balance;
+    protected double balance;
 
     /** The daily minimum balance of the account. */
     @Column(name = "minimum_balance")
-    protected Double minimumBalance;
+    protected double minimumBalance;
 
     /** The built-up interest of the account. */
     @Column(name = "interest")
-    protected Double interest;
+    protected double interest;
 
     /** The overdraft limit of the account. */
     @Column(name = "overdraft_limit")
-    protected Integer overdraftLimit;
+    protected int overdraftLimit;
 
     /*
      * Bean methods
@@ -64,38 +64,38 @@ public abstract class AccountBean {
         this.iban = iban;
     }
 
-    public Double getBalance() {
+    public double getBalance() {
         return balance;
     }
 
-    public void setBalance(Double balance) {
+    public void setBalance(double balance) {
         if (balance < getMinimumBalance()) {
             setMinimumBalance(balance);
         }
         this.balance = balance;
     }
 
-    public Double getMinimumBalance() {
+    public double getMinimumBalance() {
         return minimumBalance;
     }
 
-    public void setMinimumBalance(Double minimumBalance) {
+    public void setMinimumBalance(double minimumBalance) {
         this.minimumBalance = minimumBalance;
     }
 
-    public Double getInterest() {
+    public double getInterest() {
         return interest;
     }
 
-    public void setInterest(Double interest) {
+    public void setInterest(double interest) {
         this.interest = interest;
     }
 
-    public Integer getOverdraftLimit() {
+    public int getOverdraftLimit() {
         return overdraftLimit;
     }
 
-    public void setOverdraftLimit(Integer overdraftLimit) {
+    public void setOverdraftLimit(int overdraftLimit) {
         this.overdraftLimit = overdraftLimit;
     }
 

@@ -48,7 +48,7 @@ public class CardBean {
 
     /** The number of incorrect attempts. */
     @Column(name = "attempts")
-    private Integer attempts;
+    private int attempts;
 
     /*
      * Bean methods
@@ -101,11 +101,11 @@ public class CardBean {
         this.expirationDate = expirationDate;
     }
 
-    public Integer getAttempts() {
+    public int getAttempts() {
         return attempts;
     }
 
-    public void setAttempts(Integer attempts) {
+    public void setAttempts(int attempts) {
         this.attempts = attempts;
     }
 }
