@@ -7,7 +7,6 @@ import com.googlecode.jsonrpc4j.JsonRpcService;
 import nl.springbank.exceptions.InvalidParamValueError;
 import nl.springbank.exceptions.NotAuthorizedError;
 import nl.springbank.objects.OpenedAccountObject;
-import nl.springbank.objects.OpenedCardObject;
 
 /**
  * @author Tristan de Boer
@@ -81,6 +80,40 @@ public interface AccountController {
             @JsonRpcError(exception = NotAuthorizedError.class, code = 419)
     })
     void closeAccount(
+            @JsonRpcParam("authToken") String authToken,
+            @JsonRpcParam("iBAN") String iBAN
+    ) throws InvalidParamValueError, NotAuthorizedError;
+
+    /**
+     * Method that attempts to open a savings account for a bank account.
+     *
+     * @param authToken The authentication token, obtained with getAuthToken
+     * @param iBAN      The number of the bank account
+     * @throws InvalidParamValueError One or more parameter has an invalid value. See message.
+     * @throws NotAuthorizedError     The authenticated user is not authorized to perform this action.
+     */
+    @JsonRpcErrors({
+            @JsonRpcError(exception = InvalidParamValueError.class, code = 418),
+            @JsonRpcError(exception = NotAuthorizedError.class, code = 419)
+    })
+    void openSavingsAccount(
+            @JsonRpcParam("authToken") String authToken,
+            @JsonRpcParam("iBAN") String iBAN
+    ) throws InvalidParamValueError, NotAuthorizedError;
+
+    /**
+     * Method that attempts to close a savings account for a bank account.
+     *
+     * @param authToken The authentication token, obtained with getAuthToken
+     * @param iBAN      The number of the bank account
+     * @throws InvalidParamValueError One or more parameter has an invalid value. See message.
+     * @throws NotAuthorizedError     The authenticated user is not authorized to perform this action.
+     */
+    @JsonRpcErrors({
+            @JsonRpcError(exception = InvalidParamValueError.class, code = 418),
+            @JsonRpcError(exception = NotAuthorizedError.class, code = 419)
+    })
+    void closeSavingsAccount(
             @JsonRpcParam("authToken") String authToken,
             @JsonRpcParam("iBAN") String iBAN
     ) throws InvalidParamValueError, NotAuthorizedError;
