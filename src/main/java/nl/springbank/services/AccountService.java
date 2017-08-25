@@ -209,33 +209,6 @@ public class AccountService {
     }
 
     /**
-     * Add the daily interest based on the daily rate.
-     *
-     * @param dailyRate the daily rate
-     */
-    public void addDailyInterest(double dailyRate) {
-        List<AccountBean> accounts = getAccounts();
-        for (AccountBean account : accounts) {
-            if (account.getMinimumBalance() < 0) {
-                double dailyInterest = Math.abs(account.getMinimumBalance()) * dailyRate;
-                account.setInterest(account.getInterest() + dailyInterest);
-            }
-            account.setMinimumBalance(account.getBalance());
-        }
-        saveAccounts(accounts);
-    }
-
-    /**
-     * Reset the interest of the given account.
-     *
-     * @param account the given account
-     */
-    public void resetInterest(AccountBean account) {
-        account.setInterest(0.0);
-        saveAccount(account);
-    }
-
-    /**
      * Save the given account in the database.
      *
      * @param account the given account
