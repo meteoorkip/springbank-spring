@@ -1,6 +1,6 @@
 package nl.springbank.helper;
 
-import nl.springbank.bean.IbanBean;
+import nl.springbank.bean.AccountBean;
 import org.iban4j.CountryCode;
 import org.iban4j.Iban;
 
@@ -17,14 +17,14 @@ public class IbanHelper {
     private static final String BANK_CODE = "INGB";
 
     /**
-     * Generate an iban string that is not in the given list of existing ibans.
+     * Generate an iban string that is not used by any of the accounts in the given list of existing accounts.
      *
-     * @param existingIbanBeans the given list of existing ibans
+     * @param existingAccounts the given list of existing accounts
      * @return the generated iban
      */
-    public static String generateIban(List<IbanBean> existingIbanBeans) {
-        List<String> existingIbans = existingIbanBeans.stream()
-                .map(IbanBean::getIban)
+    public static String generateIban(List<AccountBean> existingAccounts) {
+        List<String> existingIbans = existingAccounts.stream()
+                .map(AccountBean::getIban)
                 .collect(Collectors.toList());
         String iban;
         do {
