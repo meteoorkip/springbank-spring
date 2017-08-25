@@ -37,7 +37,7 @@ public class TransferControllerImpl implements TransferController {
     public void depositIntoAccount(String iBAN, String pinCard, String pinCode, double amount) throws InvalidParamValueError, InvalidPINError {
         AccountBean bankAccount = accountService.getAccount(iBAN);
         cardService.checkPin(bankAccount, pinCard, pinCode);
-        transactionService.newDeposit(bankAccount, amount);
+        transactionService.newDeposit(bankAccount, "ATM deposit", amount, "Deposited money through an ATM");
     }
 
     @Override

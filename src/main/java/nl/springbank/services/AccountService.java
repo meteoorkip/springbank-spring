@@ -73,6 +73,45 @@ public class AccountService {
     }
 
     /**
+     * Get the checking account with the given iban.
+     *
+     * @param iban the given iban
+     * @return the checking account
+     * @throws InvalidParamValueError if an error occurred or the checking account doesn't exist
+     */
+    public CheckingAccountBean getCheckingAccount(String iban) throws InvalidParamValueError {
+        CheckingAccountBean checkingAccount;
+        try {
+            checkingAccount = checkingAccountDao.findByIban(iban);
+            Assert.notNull(checkingAccount, "Account not found");
+        } catch (IllegalArgumentException e) {
+            throw new InvalidParamValueError(e);
+        }
+        return checkingAccount;
+    }
+
+    /**
+     * Get the savings account with the given iban.
+     *
+     * @param iban the given iban
+     * @return the savings account
+     * @throws InvalidParamValueError if an error occurred or the savings account doesn't exist
+     */
+    public SavingsAccountBean getSavingsAccount(String iban) throws InvalidParamValueError {
+        if (!iban.endsWith("S")) {
+            iban += "S";
+        }
+        SavingsAccountBean savingsAccount;
+        try {
+            savingsAccount = savingsAccountDao.findByIban(iban);
+            Assert.notNull(savingsAccount, "Account not found");
+        } catch (IllegalArgumentException e) {
+            throw new InvalidParamValueError(e);
+        }
+        return savingsAccount;
+    }
+
+    /**
      * Get all accounts.
      *
      * @return the list of accounts
@@ -100,55 +139,53 @@ public class AccountService {
     }
 
     /**
-     * Check whether the given account is a checking account
-     *
-     * @param account the given account
-     * @throws InvalidParamValueError if the account is not a checking account
-     */
-    public void checkCheckingAccount(AccountBean account) throws InvalidParamValueError {
-        if (!(account instanceof CheckingAccountBean)) {
-            throw new InvalidParamValueError("Account is not a checking account");
-        }
-    }
-
-    /**
-     * Check whether the given account is a savings account
-     *
-     * @param account the given account
-     * @throws InvalidParamValueError if the account is not a savings account
-     */
-    public void checkSavingsAccount(AccountBean account) throws InvalidParamValueError {
-        if (!(account instanceof SavingsAccountBean)) {
-            throw new InvalidParamValueError("Account is not a savings account");
-        }
-    }
-
-    /**
      * Creates a new account for the given user.
      *
      * @param user the given user
      * @return the created account
      */
-    public AccountBean newCheckingAccount(UserBean user) {
+    public CheckingAccountBean newCheckingAccount(UserBean user) {
         CheckingAccountBean checkingAccount = new CheckingAccountBean();
         checkingAccount.setIban(IbanHelper.generateIban(getAccounts()));
         checkingAccount.setHolder(user);
         checkingAccount.setAccessUsers(Collections.singleton(user));
-        return saveAccount(checkingAccount);
+        return saveCheckingAccount(checkingAccount);
     }
 
     /**
-     * Closes the given account.
+     * Create a new savings account for the given checking account.
      *
-     * @param checkingAccount the given account
+     * @param checkingAccount the given checking account
+     * @return the created account
+     */
+    public SavingsAccountBean newSavingsAccount(CheckingAccountBean checkingAccount) {
+        SavingsAccountBean savingsAccount = new SavingsAccountBean();
+        savingsAccount.setCheckingAccount(checkingAccount);
+        savingsAccount.setIban(checkingAccount.getIban() + "S");
+        return saveSavingsAccount(savingsAccount);
+    }
+
+    /**
+     * Closes the given checking account.
+     *
+     * @param checkingAccount the given checking account
      * @throws InvalidParamValueError if the amount is negative
      */
-    public void closeCheckingAccount(AccountBean checkingAccount) throws InvalidParamValueError {
-        // TODO: closeAccount method for both types
+    public void closeCheckingAccount(CheckingAccountBean checkingAccount) throws InvalidParamValueError {
         if (checkingAccount.getBalance() < 0) {
             throw new InvalidParamValueError("The specified account has a negative amount");
         }
         deleteAccount(checkingAccount);
+    }
+
+    /**
+     * Closes the given savings account.
+     *
+     * @param savingsAccount the given savings account
+     */
+    public void closeSavingsAccount(SavingsAccountBean savingsAccount) {
+        assert savingsAccount.getBalance() == 0;
+        deleteAccount(savingsAccount);
     }
 
     /**
@@ -209,6 +246,26 @@ public class AccountService {
     }
 
     /**
+     * Save the given checking account in the database.
+     *
+     * @param checkingAccount the given checking account
+     * @return the saved checking account
+     */
+    public CheckingAccountBean saveCheckingAccount(CheckingAccountBean checkingAccount) {
+        return checkingAccountDao.save(checkingAccount);
+    }
+
+    /**
+     * Save the given savings account in the database.
+     *
+     * @param savingsAccount the given savings account
+     * @return the saved savings account
+     */
+    public SavingsAccountBean saveSavingsAccount(SavingsAccountBean savingsAccount) {
+        return savingsAccountDao.save(savingsAccount);
+    }
+
+    /**
      * Save the given accounts in the database.
      *
      * @param accounts the given accounts
@@ -216,6 +273,26 @@ public class AccountService {
      */
     public List<AccountBean> saveAccounts(Iterable<AccountBean> accounts) {
         return accountDao.save(accounts);
+    }
+
+    /**
+     * Save the given checking accounts in the database.
+     *
+     * @param checkingAccounts the given checking accounts
+     * @return the list of saved checking accounts
+     */
+    public List<CheckingAccountBean> saveCheckingAccounts(Iterable<CheckingAccountBean> checkingAccounts) {
+        return checkingAccountDao.save(checkingAccounts);
+    }
+
+    /**
+     * Save the given savings accounts in the database.
+     *
+     * @param savingsAccounts the given savings accounts
+     * @return the list of saved savings accounts
+     */
+    public List<SavingsAccountBean> saveSavingsAccounts(Iterable<SavingsAccountBean> savingsAccounts) {
+        return savingsAccountDao.save(savingsAccounts);
     }
 
     /**

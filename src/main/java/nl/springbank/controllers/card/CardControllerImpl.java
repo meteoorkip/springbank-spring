@@ -39,7 +39,7 @@ public class CardControllerImpl implements CardController {
         AccountBean account = accountService.getAccount(iBAN);
         CardBean card = cardService.getCard(account, pinCard);
         userService.checkCardOwner(card, authToken);
-        transactionService.newWithdrawal(account, 7.5);
+        transactionService.newWithdrawal(account, "New PIN card", 7.5, "Received a new PIN card");
         CardBean newCard = cardService.invalidateCard(card, newPin);
         return new OpenedCardObject(newCard, newPin);
     }

@@ -28,7 +28,7 @@ public class OverdraftControllerImpl implements OverdraftController {
 
     @Override
     public void setOverdraftLimit(String authToken, String iBAN, int overdraftLimit) throws InvalidParamValueError, NotAuthorizedError {
-        AccountBean account = accountService.getAccount(iBAN);
+        AccountBean account = accountService.getCheckingAccount(iBAN);
         userService.checkAccess(account, authToken);
         accountService.setOverdraftLimit(account, overdraftLimit);
     }
@@ -39,6 +39,4 @@ public class OverdraftControllerImpl implements OverdraftController {
         userService.checkAccess(account, authToken);
         return new OverdraftLimitObject(account);
     }
-
-
 }

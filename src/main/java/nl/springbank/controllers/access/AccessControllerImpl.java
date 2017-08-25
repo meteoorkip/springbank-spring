@@ -39,8 +39,7 @@ public class AccessControllerImpl implements AccessController {
 
     @Override
     public OpenedCardObject provideAccess(String authToken, String iBAN, String username) throws InvalidParamValueError, NotAuthorizedError, NoEffectError {
-        AccountBean account = accountService.getAccount(iBAN);
-        accountService.checkCheckingAccount(account);
+        AccountBean account = accountService.getCheckingAccount(iBAN);
         userService.checkHolder(account, authToken);
         UserBean user = userService.getUser(username);
         Set<UserBean> accessUsers = account.getAccessUsers();

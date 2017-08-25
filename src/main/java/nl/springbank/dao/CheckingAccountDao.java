@@ -12,4 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface CheckingAccountDao extends JpaRepository<CheckingAccountBean, Long> {
+    /**
+     * Get the checking account belonging to the given iban.
+     *
+     * @param iban the given iban
+     * @return the checking account, or {@code null} if it doesn't exist
+     */
+    CheckingAccountBean findByIban(String iban);
 }

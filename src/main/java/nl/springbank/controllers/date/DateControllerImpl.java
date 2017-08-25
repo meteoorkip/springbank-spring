@@ -48,7 +48,7 @@ public class DateControllerImpl implements DateController {
         calendar.add(Calendar.DATE, 1);
         if (calendar.get(Calendar.DAY_OF_MONTH) == 1) {
             for (AccountBean account : accountService.getAccounts()) {
-                transactionService.newWithdrawal(account, account.getInterest());
+                transactionService.newWithdrawal(account, "Interest", account.getInterest(), "Payed interest because of negative balance");
                 accountService.resetInterest(account);
             }
         }

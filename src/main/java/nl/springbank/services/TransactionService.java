@@ -90,19 +90,23 @@ public class TransactionService {
         return transactionDao.findAll();
     }
 
-    // TODO: Add name and message for deposit and withdrawal
-
     /**
      * Makes a new deposit.
      *
      * @param account the target account
      * @param amount  the amount
      */
-    public synchronized void newDeposit(AccountBean account, double amount) {
+    public synchronized void newDeposit(AccountBean account, String targetName, double amount, String description) throws InvalidParamValueError {
+        if (amount == 0) {
+            return;
+        }
+        checkAmount(amount);
         TransactionBean transaction = new TransactionBean();
         account.setBalance(account.getBalance() + amount);
         transaction.setTargetAccount(account);
+        transaction.setTargetName(targetName);
         transaction.setAmount(amount);
+        transaction.setMessage(description);
         transaction.setDate(DateHelper.getTime());
         saveTransaction(transaction);
     }
@@ -115,12 +119,17 @@ public class TransactionService {
      * @throws InvalidParamValueError if the amount is less than zero or the source account dus not have enough
      *                                money
      */
-    public synchronized void newWithdrawal(AccountBean account, double amount) throws InvalidParamValueError {
+    public synchronized void newWithdrawal(AccountBean account, String targetName, double amount, String description) throws InvalidParamValueError {
+        if (amount == 0) {
+            return;
+        }
         checkAmount(account, amount);
         TransactionBean transaction = new TransactionBean();
         account.setBalance(account.getBalance() - amount);
         transaction.setSourceAccount(account);
+        transaction.setTargetName(targetName);
         transaction.setAmount(amount);
+        transaction.setMessage(description);
         transaction.setDate(DateHelper.getTime());
         saveTransaction(transaction);
     }
@@ -137,6 +146,9 @@ public class TransactionService {
      *                                money
      */
     public synchronized void newTransaction(AccountBean sourceAccount, AccountBean targetAccount, String targetName, double amount, String description) throws InvalidParamValueError {
+        if (amount == 0) {
+            return;
+        }
         checkAmount(sourceAccount, amount);
         sourceAccount.setBalance(sourceAccount.getBalance() - amount);
         targetAccount.setBalance(targetAccount.getBalance() + amount);
@@ -155,14 +167,25 @@ public class TransactionService {
      * Checks if the amount is valid for the given account.
      *
      * @param account the given account
-     * @param amount      the amount
+     * @param amount  the amount
      * @throws InvalidParamValueError if the amount is less than zero or the account dus not have enough money
      */
     private void checkAmount(AccountBean account, double amount) throws InvalidParamValueError {
+        checkAmount(amount);
+        if (amount > account.getBalance() + account.getOverdraftLimit()) {
+            throw new InvalidParamValueError("Amount more than available money");
+        }
+    }
+
+    /**
+     * Checks if the amount is valid
+     *
+     * @param amount the amount
+     * @throws InvalidParamValueError if the amount is less than zero
+     */
+    private void checkAmount(double amount) throws InvalidParamValueError {
         if (amount < 0) {
             throw new InvalidParamValueError("Amount less than zero: " + amount);
-        } else if (amount > account.getBalance() + account.getOverdraftLimit()) {
-            throw new InvalidParamValueError("Amount more than available money");
         }
     }
 

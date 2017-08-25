@@ -11,4 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface SavingsAccountDao extends JpaRepository<SavingsAccountBean, Long> {
+    /**
+     * Get the savings account belonging to the given iban.
+     *
+     * @param iban the given iban
+     * @return the savings account, or {@code null} if it doesn't exist
+     */
+    SavingsAccountBean findByIban(String iban);
 }
