@@ -1,7 +1,8 @@
 package nl.springbank.controllers.info;
 
 import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceImpl;
-import nl.springbank.bean.BankAccountBean;
+import nl.springbank.bean.AccountBean;
+import nl.springbank.bean.CheckingAccountBean;
 import nl.springbank.bean.TransactionBean;
 import nl.springbank.bean.UserBean;
 import nl.springbank.exceptions.InvalidParamValueError;
@@ -10,7 +11,7 @@ import nl.springbank.objects.BalanceObject;
 import nl.springbank.objects.BankAccountAccessObject;
 import nl.springbank.objects.TransactionObject;
 import nl.springbank.objects.UserAccessObject;
-import nl.springbank.services.BankAccountService;
+import nl.springbank.services.AccountService;
 import nl.springbank.services.TransactionService;
 import nl.springbank.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,29 +28,29 @@ import java.util.stream.Collectors;
 @AutoJsonRpcServiceImpl
 public class InfoControllerImpl implements InfoController {
 
-    private final BankAccountService bankAccountService;
+    private final AccountService accountService;
     private final UserService userService;
     private final TransactionService transactionService;
 
     @Autowired
-    public InfoControllerImpl(BankAccountService bankAccountService, UserService userService, TransactionService transactionService) {
-        this.bankAccountService = bankAccountService;
+    public InfoControllerImpl(AccountService accountService, UserService userService, TransactionService transactionService) {
+        this.accountService = accountService;
         this.userService = userService;
         this.transactionService = transactionService;
     }
 
     @Override
     public BalanceObject getBalance(String authToken, String iBAN) throws InvalidParamValueError, NotAuthorizedError {
-        BankAccountBean bankAccount = bankAccountService.getBankAccount(iBAN);
-        userService.checkAccess(bankAccount, authToken);
-        return new BalanceObject(bankAccount);
+        AccountBean account = accountService.getAccount(iBAN);
+        userService.checkAccess(account, authToken);
+        return new BalanceObject(account);
     }
 
     @Override
     public List<TransactionObject> getTransactionsOverview(String authToken, String iBAN, int nrOfTransactions) throws InvalidParamValueError, NotAuthorizedError {
-        BankAccountBean bankAccount = bankAccountService.getBankAccount(iBAN);
-        userService.checkAccess(bankAccount, authToken);
-        List<TransactionBean> transactions = transactionService.getTransactionsBySourceOrTargetAccount(bankAccount, bankAccount);
+        AccountBean account = accountService.getAccount(iBAN);
+        userService.checkAccess(account, authToken);
+        List<TransactionBean> transactions = transactionService.getTransactionsBySourceOrTargetAccount(account, account);
         return transactions.stream()
                 .limit(nrOfTransactions)
                 .map(TransactionObject::new)
@@ -59,7 +60,7 @@ public class InfoControllerImpl implements InfoController {
     @Override
     public List<UserAccessObject> getUserAccess(String authToken) throws InvalidParamValueError, NotAuthorizedError {
         UserBean user = userService.getUserByAuth(authToken);
-        Set<BankAccountBean> accessAccounts = user.getAccessAccounts();
+        Set<CheckingAccountBean> accessAccounts = user.getAccessAccounts();
         return accessAccounts.stream()
                 .map(UserAccessObject::new)
                 .collect(Collectors.toList());
@@ -67,9 +68,9 @@ public class InfoControllerImpl implements InfoController {
 
     @Override
     public List<BankAccountAccessObject> getBankAccountAccess(String authToken, String iBAN) throws InvalidParamValueError, NotAuthorizedError {
-        BankAccountBean bankAccount = bankAccountService.getBankAccount(iBAN);
-        userService.checkHolder(bankAccount, authToken);
-        Set<UserBean> accessUsers = bankAccount.getAccessUsers();
+        AccountBean account = accountService.getAccount(iBAN);
+        userService.checkHolder(account, authToken);
+        Set<UserBean> accessUsers = account.getAccessUsers();
         return accessUsers.stream()
                 .map(BankAccountAccessObject::new)
                 .collect(Collectors.toList());

@@ -1,14 +1,15 @@
 package nl.springbank.controllers.account;
 
 import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceImpl;
-import nl.springbank.bean.BankAccountBean;
+import nl.springbank.bean.AccountBean;
 import nl.springbank.bean.CardBean;
-import nl.springbank.bean.IbanBean;
 import nl.springbank.bean.UserBean;
 import nl.springbank.exceptions.InvalidParamValueError;
 import nl.springbank.exceptions.NotAuthorizedError;
 import nl.springbank.objects.OpenedAccountObject;
-import nl.springbank.services.*;
+import nl.springbank.services.AccountService;
+import nl.springbank.services.CardService;
+import nl.springbank.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -22,18 +23,14 @@ import org.springframework.stereotype.Service;
 public class AccountControllerImpl implements AccountController {
 
     private final UserService userService;
-    private final BankAccountService bankAccountService;
-    private final IbanService ibanService;
+    private final AccountService accountService;
     private final CardService cardService;
-    private final TransactionService transactionService;
 
     @Autowired
-    public AccountControllerImpl(UserService userService, BankAccountService bankAccountService, IbanService ibanService, CardService cardService, TransactionService transactionService) {
+    public AccountControllerImpl(UserService userService, AccountService accountService, CardService cardService) {
         this.userService = userService;
-        this.bankAccountService = bankAccountService;
-        this.ibanService = ibanService;
+        this.accountService = accountService;
         this.cardService = cardService;
-        this.transactionService = transactionService;
     }
 
     @Override
@@ -53,19 +50,18 @@ public class AccountControllerImpl implements AccountController {
     }
 
     private OpenedAccountObject openAccount(UserBean user) {
-        BankAccountBean bankAccount = bankAccountService.newBankAccount(user);
-        IbanBean iban = ibanService.newIban(bankAccount);
-        CardBean card = cardService.newCard(bankAccount, user);
-        return new OpenedAccountObject(iban, card);
+        AccountBean account = accountService.newCheckingAccount(user);
+        CardBean card = cardService.newCard(account, user);
+        return new OpenedAccountObject(account, card);
     }
 
     @Override
     public void closeAccount(String authToken, String iBAN) throws InvalidParamValueError, NotAuthorizedError {
+        AccountBean account = accountService.getAccount(iBAN);
         UserBean user = userService.getUserByAuth(authToken);
-        BankAccountBean bankAccount = bankAccountService.getBankAccount(iBAN);
-        userService.checkHolder(bankAccount, user);
-        bankAccountService.closeBankAccount(bankAccount);
-        user = userService.getUserByAuth(authToken);
+        userService.checkHolder(account, user);
+        accountService.closeCheckingAccount(account);
+        user = userService.getUserByAuth(authToken); // refresh user bean
         if (user.getHolderAccounts().isEmpty()) {
             userService.deleteUser(user);
         }

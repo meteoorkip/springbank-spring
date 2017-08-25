@@ -1,11 +1,11 @@
 package nl.springbank.controllers.date;
 
 import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceImpl;
-import nl.springbank.bean.BankAccountBean;
+import nl.springbank.bean.AccountBean;
 import nl.springbank.exceptions.InvalidParamValueError;
 import nl.springbank.helper.DateHelper;
 import nl.springbank.objects.DateObject;
-import nl.springbank.services.BankAccountService;
+import nl.springbank.services.AccountService;
 import nl.springbank.services.TransactionService;
 import nl.springbank.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +23,13 @@ public class DateControllerImpl implements DateController {
     private static final double MONTHLY_RATE = 0.00797414043;
 
     private final UserService userService;
-    private final BankAccountService bankAccountService;
+    private final AccountService accountService;
     private final TransactionService transactionService;
 
     @Autowired
-    public DateControllerImpl(UserService userService, BankAccountService bankAccountService, TransactionService transactionService) {
+    public DateControllerImpl(UserService userService, AccountService accountService, TransactionService transactionService) {
         this.userService = userService;
-        this.bankAccountService = bankAccountService;
+        this.accountService = accountService;
         this.transactionService = transactionService;
     }
 
@@ -47,13 +47,13 @@ public class DateControllerImpl implements DateController {
         Calendar calendar = DateHelper.getSystemCalendar();
         calendar.add(Calendar.DATE, 1);
         if (calendar.get(Calendar.DAY_OF_MONTH) == 1) {
-            for (BankAccountBean bankAccount : bankAccountService.getBankAccounts()) {
-                transactionService.newWithdrawal(bankAccount, bankAccount.getInterest());
-                bankAccountService.resetInterest(bankAccount);
+            for (AccountBean account : accountService.getAccounts()) {
+                transactionService.newWithdrawal(account, account.getInterest());
+                accountService.resetInterest(account);
             }
         }
         double dailyRate = MONTHLY_RATE / calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        bankAccountService.addDailyInterest(dailyRate);
+        accountService.addDailyInterest(dailyRate);
     }
 
     @Override

@@ -27,10 +27,6 @@ public class CheckingAccountBean extends AccountBean {
     /*
      * Mapped values
      */
-    @OneToOne(cascade = ALL, orphanRemoval = true)
-    @JoinColumn(name = "checkingAccount")
-    private SavingsAccountBean savingsAccount;
-
     /** The users that have access to the account. */
     @ManyToMany
     @JoinTable(
@@ -39,6 +35,10 @@ public class CheckingAccountBean extends AccountBean {
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     )
     private Set<UserBean> accessUsers = Collections.emptySet();
+
+    @OneToOne(cascade = ALL, orphanRemoval = true)
+    @JoinColumn(name = "checkingAccount")
+    private SavingsAccountBean savingsAccount;
 
     /*
      * Bean methods
@@ -53,14 +53,6 @@ public class CheckingAccountBean extends AccountBean {
         this.holder = holder;
     }
 
-    public SavingsAccountBean getSavingsAccount() {
-        return savingsAccount;
-    }
-
-    public void setSavingsAccount(SavingsAccountBean savingsAccount) {
-        this.savingsAccount = savingsAccount;
-    }
-
     @Override
     public Set<UserBean> getAccessUsers() {
         return accessUsers;
@@ -69,5 +61,13 @@ public class CheckingAccountBean extends AccountBean {
     @Override
     public void setAccessUsers(Set<UserBean> accessUsers) {
         this.accessUsers = accessUsers;
+    }
+
+    public SavingsAccountBean getSavingsAccount() {
+        return savingsAccount;
+    }
+
+    public void setSavingsAccount(SavingsAccountBean savingsAccount) {
+        this.savingsAccount = savingsAccount;
     }
 }

@@ -1,12 +1,12 @@
 package nl.springbank.controllers.transfer;
 
 import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceImpl;
-import nl.springbank.bean.BankAccountBean;
+import nl.springbank.bean.AccountBean;
 import nl.springbank.exceptions.InvalidPINError;
 import nl.springbank.exceptions.InvalidParamValueError;
 import nl.springbank.exceptions.NotAuthorizedError;
 import nl.springbank.helper.UserHelper;
-import nl.springbank.services.BankAccountService;
+import nl.springbank.services.AccountService;
 import nl.springbank.services.CardService;
 import nl.springbank.services.TransactionService;
 import nl.springbank.services.UserService;
@@ -20,14 +20,14 @@ import org.springframework.stereotype.Service;
 @AutoJsonRpcServiceImpl
 public class TransferControllerImpl implements TransferController {
 
-    private final BankAccountService bankAccountService;
+    private final AccountService accountService;
     private final UserService userService;
     private final CardService cardService;
     private final TransactionService transactionService;
 
     @Autowired
-    public TransferControllerImpl(BankAccountService bankAccountService, UserService userService, CardService cardService, TransactionService transactionService) {
-        this.bankAccountService = bankAccountService;
+    public TransferControllerImpl(AccountService accountService, UserService userService, CardService cardService, TransactionService transactionService) {
+        this.accountService = accountService;
         this.userService = userService;
         this.cardService = cardService;
         this.transactionService = transactionService;
@@ -35,25 +35,25 @@ public class TransferControllerImpl implements TransferController {
 
     @Override
     public void depositIntoAccount(String iBAN, String pinCard, String pinCode, double amount) throws InvalidParamValueError, InvalidPINError {
-        BankAccountBean bankAccount = bankAccountService.getBankAccount(iBAN);
+        AccountBean bankAccount = accountService.getAccount(iBAN);
         cardService.checkPin(bankAccount, pinCard, pinCode);
         transactionService.newDeposit(bankAccount, amount);
     }
 
     @Override
     public void payFromAccount(String sourceIBAN, String targetIBAN, String pinCard, String pinCode, double amount) throws InvalidParamValueError, InvalidPINError {
-        BankAccountBean sourceAccount = bankAccountService.getBankAccount(sourceIBAN);
+        AccountBean sourceAccount = accountService.getAccount(sourceIBAN);
         cardService.checkPin(sourceAccount, pinCard, pinCode);
-        BankAccountBean targetAccount = bankAccountService.getBankAccount(targetIBAN);
+        AccountBean targetAccount = accountService.getAccount(targetIBAN);
         String targetName = UserHelper.getDisplayName(targetAccount.getHolder());
         transactionService.newTransaction(sourceAccount, targetAccount, targetName, amount, "PIN transaction");
     }
 
     @Override
     public void transferMoney(String authToken, String sourceIBAN, String targetIBAN, String targetName, double amount, String description) throws InvalidParamValueError, NotAuthorizedError {
-        BankAccountBean sourceAccount = bankAccountService.getBankAccount(sourceIBAN);
+        AccountBean sourceAccount = accountService.getAccount(sourceIBAN);
         userService.checkAccess(sourceAccount, authToken);
-        BankAccountBean targetAccount = bankAccountService.getBankAccount(targetIBAN);
+        AccountBean targetAccount = accountService.getAccount(targetIBAN);
         transactionService.newTransaction(sourceAccount, targetAccount, targetName, amount, description);
     }
 }

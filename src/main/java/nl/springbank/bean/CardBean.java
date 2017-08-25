@@ -13,7 +13,7 @@ import static javax.persistence.GenerationType.AUTO;
  */
 @Entity
 @Table(name = "card", uniqueConstraints = @UniqueConstraint(columnNames = {
-        "checking_account_id", "card_number"
+        "account_id", "card_number"
 }))
 public class CardBean {
     /*

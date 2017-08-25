@@ -100,6 +100,30 @@ public class AccountService {
     }
 
     /**
+     * Check whether the given account is a checking account
+     *
+     * @param account the given account
+     * @throws InvalidParamValueError if the account is not a checking account
+     */
+    public void checkCheckingAccount(AccountBean account) throws InvalidParamValueError {
+        if (!(account instanceof CheckingAccountBean)) {
+            throw new InvalidParamValueError("Account is not a checking account");
+        }
+    }
+
+    /**
+     * Check whether the given account is a savings account
+     *
+     * @param account the given account
+     * @throws InvalidParamValueError if the account is not a savings account
+     */
+    public void checkSavingsAccount(AccountBean account) throws InvalidParamValueError {
+        if (!(account instanceof SavingsAccountBean)) {
+            throw new InvalidParamValueError("Account is not a savings account");
+        }
+    }
+
+    /**
      * Creates a new account for the given user.
      *
      * @param user the given user
@@ -119,7 +143,7 @@ public class AccountService {
      * @param checkingAccount the given account
      * @throws InvalidParamValueError if the amount is negative
      */
-    public void closeCheckingAccount(CheckingAccountBean checkingAccount) throws InvalidParamValueError {
+    public void closeCheckingAccount(AccountBean checkingAccount) throws InvalidParamValueError {
         // TODO: closeAccount method for both types
         if (checkingAccount.getBalance() < 0) {
             throw new InvalidParamValueError("The specified account has a negative amount");
