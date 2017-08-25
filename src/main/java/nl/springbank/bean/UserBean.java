@@ -9,7 +9,7 @@ import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.GenerationType.AUTO;
 
 /**
- * Bean representing the bank_account table.
+ * Bean representing a user.
  *
  * @author Tristan de Boer
  * @author Sven Konings
@@ -69,13 +69,13 @@ public class UserBean {
     /*
      * Mapped values
      */
-    /** The accounts this user is the holder of. */
+    /** The checking accounts this user is the holder of. */
     @OneToMany(mappedBy = "holder", cascade = ALL, orphanRemoval = true)
-    private Set<BankAccountBean> holderAccounts = Collections.emptySet();
+    private Set<CheckingAccountBean> holderAccounts = Collections.emptySet();
 
-    /** The accounts this user has access to. */
+    /** The checking accounts this user has access to. */
     @ManyToMany(mappedBy = "accessUsers", cascade = ALL)
-    private Set<BankAccountBean> accessAccounts = Collections.emptySet();
+    private Set<CheckingAccountBean> accessAccounts = Collections.emptySet();
 
     /** The cards of the user. */
     @OneToMany(mappedBy = "user", cascade = ALL, orphanRemoval = true)
@@ -172,19 +172,19 @@ public class UserBean {
         this.email = email;
     }
 
-    public Set<BankAccountBean> getHolderAccounts() {
+    public Set<CheckingAccountBean> getHolderAccounts() {
         return holderAccounts;
     }
 
-    public void setHolderAccounts(Set<BankAccountBean> holderAccounts) {
+    public void setHolderAccounts(Set<CheckingAccountBean> holderAccounts) {
         this.holderAccounts = holderAccounts;
     }
 
-    public Set<BankAccountBean> getAccessAccounts() {
+    public Set<CheckingAccountBean> getAccessAccounts() {
         return accessAccounts;
     }
 
-    public void setAccessAccounts(Set<BankAccountBean> accessAccounts) {
+    public void setAccessAccounts(Set<CheckingAccountBean> accessAccounts) {
         this.accessAccounts = accessAccounts;
     }
 
@@ -194,22 +194,5 @@ public class UserBean {
 
     public void setCards(Set<CardBean> cards) {
         this.cards = cards;
-    }
-
-    @Override
-    public String toString() {
-        return "UserBean{" +
-                "userId=" + userId +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", initials='" + initials + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                ", bsn='" + bsn + '\'' +
-                ", streetAddress='" + streetAddress + '\'' +
-                ", telephoneNumber='" + telephoneNumber + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                '}';
     }
 }
