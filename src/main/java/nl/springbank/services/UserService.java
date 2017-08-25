@@ -1,6 +1,6 @@
 package nl.springbank.services;
 
-import nl.springbank.bean.BankAccountBean;
+import nl.springbank.bean.AccountBean;
 import nl.springbank.bean.CardBean;
 import nl.springbank.bean.UserBean;
 import nl.springbank.dao.UserDao;
@@ -115,49 +115,49 @@ public class UserService {
     }
 
     /**
-     * Check if the user that belongs to the given authentication token is the holder of the given bank account.
+     * Check if the user that belongs to the given authentication token is the holder of the given account.
      *
-     * @param bankAccount the given bank account
-     * @param authToken   the given authentication token
-     * @throws NotAuthorizedError if the user is not the holder of the given bank account
+     * @param account   the given account
+     * @param authToken the given authentication token
+     * @throws NotAuthorizedError if the user is not the holder of the given account
      */
-    public void checkHolder(BankAccountBean bankAccount, String authToken) throws NotAuthorizedError {
-        checkHolder(bankAccount, getUserByAuth(authToken));
+    public void checkHolder(AccountBean account, String authToken) throws NotAuthorizedError {
+        checkHolder(account, getUserByAuth(authToken));
     }
 
     /**
-     * Check if the given user is the holder of the given bank account.
+     * Check if the given user is the holder of the given account.
      *
-     * @param bankAccount the given bank account
-     * @param user        the given user
-     * @throws NotAuthorizedError if the user is not the holder of the given bank account
+     * @param account the given account
+     * @param user    the given user
+     * @throws NotAuthorizedError if the user is not the holder of the given account
      */
-    public void checkHolder(BankAccountBean bankAccount, UserBean user) throws NotAuthorizedError {
-        if (!bankAccount.getHolder().equals(user)) {
+    public void checkHolder(AccountBean account, UserBean user) throws NotAuthorizedError {
+        if (!account.getHolder().equals(user)) {
             throw new NotAuthorizedError("User is not eligible to get access");
         }
     }
 
     /**
-     * Check if the user that belongs to the given authentication token is allowed to access the given bank account.
+     * Check if the user that belongs to the given authentication token is allowed to access the given account.
      *
-     * @param bankAccount the given bank account
-     * @param authToken   the given authentication token
-     * @throws NotAuthorizedError if the user is not allowed to access the given bank account
+     * @param account   the given account
+     * @param authToken the given authentication token
+     * @throws NotAuthorizedError if the user is not allowed to access the given account
      */
-    public void checkAccess(BankAccountBean bankAccount, String authToken) throws NotAuthorizedError {
-        checkAccess(bankAccount, getUserByAuth(authToken));
+    public void checkAccess(AccountBean account, String authToken) throws NotAuthorizedError {
+        checkAccess(account, getUserByAuth(authToken));
     }
 
     /**
-     * Check if the given user is allowed to access the given bank account.
+     * Check if the given user is allowed to access the given account.
      *
-     * @param bankAccount the given bank account
-     * @param user        the given user
-     * @throws NotAuthorizedError if the user is not allowed to access the given bank account
+     * @param account the given account
+     * @param user    the given user
+     * @throws NotAuthorizedError if the user is not allowed to access the given account
      */
-    public void checkAccess(BankAccountBean bankAccount, UserBean user) throws NotAuthorizedError {
-        if (!bankAccount.getAccessUsers().contains(user)) {
+    public void checkAccess(AccountBean account, UserBean user) throws NotAuthorizedError {
+        if (!account.getAccessUsers().contains(user)) {
             throw new NotAuthorizedError("User is not eligible to get access");
         }
     }

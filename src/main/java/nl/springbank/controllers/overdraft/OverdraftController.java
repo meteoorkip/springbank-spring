@@ -6,7 +6,7 @@ import com.googlecode.jsonrpc4j.JsonRpcParam;
 import com.googlecode.jsonrpc4j.JsonRpcService;
 import nl.springbank.exceptions.InvalidParamValueError;
 import nl.springbank.exceptions.NotAuthorizedError;
-import nl.springbank.objects.OverdraftObject;
+import nl.springbank.objects.OverdraftLimitObject;
 
 /**
  * @author Sven Konings
@@ -44,7 +44,7 @@ public interface OverdraftController {
      * @throws InvalidParamValueError One or more parameter has an invalid value. See message.
      * @throws NotAuthorizedError     The authenticated user is not authorized to perform this action.
      */
-    OverdraftObject getOverdraftLimit(
+    OverdraftLimitObject getOverdraftLimit(
             @JsonRpcParam("authToken") String authToken,
             @JsonRpcParam("iBAN") String iBAN
     ) throws InvalidParamValueError, NotAuthorizedError;

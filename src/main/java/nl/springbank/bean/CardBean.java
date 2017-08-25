@@ -6,14 +6,14 @@ import java.util.Date;
 import static javax.persistence.GenerationType.AUTO;
 
 /**
- * Bean representing the card table. A card is associated with a bank account.
+ * Bean representing a card.
  *
  * @author Tristan de Boer
  * @author Sven Konings
  */
 @Entity
 @Table(name = "card", uniqueConstraints = @UniqueConstraint(columnNames = {
-        "bank_account_id", "card_number"
+        "account_id", "card_number"
 }))
 public class CardBean {
     /*
@@ -25,10 +25,10 @@ public class CardBean {
     @GeneratedValue(strategy = AUTO)
     private Long cardId;
 
-    /** The bank account associated with the card. */
+    /** The account associated with the card. */
     @ManyToOne
-    @JoinColumn(name = "bank_account_id")
-    private BankAccountBean bankAccount;
+    @JoinColumn(name = "account_id")
+    private AccountBean account;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -48,7 +48,7 @@ public class CardBean {
 
     /** The number of incorrect attempts. */
     @Column(name = "attempts")
-    private Integer attempts;
+    private int attempts;
 
     /*
      * Bean methods
@@ -61,12 +61,12 @@ public class CardBean {
         this.cardId = cardId;
     }
 
-    public BankAccountBean getBankAccount() {
-        return bankAccount;
+    public AccountBean getAccount() {
+        return account;
     }
 
-    public void setBankAccount(BankAccountBean bankAccount) {
-        this.bankAccount = bankAccount;
+    public void setAccount(AccountBean account) {
+        this.account = account;
     }
 
     public UserBean getUser() {
@@ -101,24 +101,11 @@ public class CardBean {
         this.expirationDate = expirationDate;
     }
 
-    public Integer getAttempts() {
+    public int getAttempts() {
         return attempts;
     }
 
-    public void setAttempts(Integer attempts) {
+    public void setAttempts(int attempts) {
         this.attempts = attempts;
-    }
-
-    @Override
-    public String toString() {
-        return "CardBean{" +
-                "cardId=" + cardId +
-                ", bankAccount=" + bankAccount +
-                ", user=" + user +
-                ", cardNumber='" + cardNumber + '\'' +
-                ", pin='" + pin + '\'' +
-                ", expirationDate=" + expirationDate +
-                ", attempts=" + attempts +
-                '}';
     }
 }

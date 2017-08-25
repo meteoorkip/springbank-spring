@@ -1,6 +1,7 @@
 package nl.springbank.services;
 
-import nl.springbank.bean.BankAccountBean;
+import nl.springbank.bean.AccountBean;
+import nl.springbank.bean.SavingsAccountBean;
 import nl.springbank.bean.TransactionBean;
 import nl.springbank.dao.TransactionDao;
 import nl.springbank.exceptions.InvalidParamValueError;
@@ -9,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 
 /**
@@ -48,17 +47,17 @@ public class TransactionService {
     }
 
     /**
-     * Get the transactions with the given source or target bank account.
+     * Get the transactions with the given source or target account.
      *
-     * @param sourceAccount the given source bank account
-     * @param targetAccount the given target bank account
+     * @param sourceAccount the given source account
+     * @param targetAccount the given target account
      * @return the list of transactions
      * @throws InvalidParamValueError if an error occurred
      */
-    public List<TransactionBean> getTransactionsBySourceOrTargetAccount(BankAccountBean sourceAccount, BankAccountBean targetAccount) throws InvalidParamValueError {
+    public List<TransactionBean> getTransactionsBySourceOrTargetAccount(AccountBean sourceAccount, AccountBean targetAccount) throws InvalidParamValueError {
         List<TransactionBean> transactions;
         try {
-            transactions = transactionDao.findBySourceBankAccountOrTargetBankAccountOrderByDateDesc(sourceAccount, targetAccount);
+            transactions = transactionDao.findBySourceAccountOrTargetAccountOrderByDateDesc(sourceAccount, targetAccount);
         } catch (IllegalArgumentException e) {
             throw new InvalidParamValueError(e);
         }
@@ -66,17 +65,17 @@ public class TransactionService {
     }
 
     /**
-     * Get the transactions with the given source and target bank account.
+     * Get the transactions with the given source and target account.
      *
-     * @param sourceAccount the given source bank account
-     * @param targetAccount the given target bank account
+     * @param sourceAccount the given source account
+     * @param targetAccount the given target account
      * @return the list of transactions
      * @throws InvalidParamValueError if an error occurred
      */
-    public List<TransactionBean> getTransactionsBySourceAndTargetAccount(BankAccountBean sourceAccount, BankAccountBean targetAccount) throws InvalidParamValueError {
+    public List<TransactionBean> getTransactionsBySourceAndTargetAccount(AccountBean sourceAccount, AccountBean targetAccount) throws InvalidParamValueError {
         List<TransactionBean> transactions;
         try {
-            transactions = transactionDao.findBySourceBankAccountAndTargetBankAccountOrderByDateDesc(sourceAccount, targetAccount);
+            transactions = transactionDao.findBySourceAccountAndTargetAccountOrderByDateDesc(sourceAccount, targetAccount);
         } catch (IllegalArgumentException e) {
             throw new InvalidParamValueError(e);
         }
@@ -95,55 +94,17 @@ public class TransactionService {
     /**
      * Makes a new deposit.
      *
-     * @param bankAccount the target bank account
-     * @param amount      the amount
+     * @param account the target account
+     * @param amount  the amount
      */
-    public synchronized void newDeposit(BankAccountBean bankAccount, double amount) {
+    public synchronized void newDeposit(AccountBean account, String targetName, double amount, String description) throws InvalidParamValueError {
+        if (amount == 0) {
+            return;
+        }
+        checkAmount(amount);
         TransactionBean transaction = new TransactionBean();
-        bankAccount.setBalance(bankAccount.getBalance() + amount);
-        transaction.setTargetBankAccount(bankAccount);
-        transaction.setAmount(amount);
-        transaction.setDate(DateHelper.getTime());
-        saveTransaction(transaction);
-    }
-
-    /**
-     * Makes a new withdrawal
-     *
-     * @param bankAccount the source bank account
-     * @param amount      the amount
-     * @throws InvalidParamValueError if the amount is less than zero or the source bank account dus not have enough
-     *                                money
-     */
-    public synchronized void newWithdrawal(BankAccountBean bankAccount, double amount) throws InvalidParamValueError {
-        checkAmount(bankAccount, amount);
-        TransactionBean transaction = new TransactionBean();
-        bankAccount.setBalance(bankAccount.getBalance() - amount);
-        transaction.setSourceBankAccount(bankAccount);
-        transaction.setAmount(amount);
-        transaction.setDate(DateHelper.getTime());
-        saveTransaction(transaction);
-    }
-
-    /**
-     * Makes a new transaction.
-     *
-     * @param sourceAccount the source bank account
-     * @param targetAccount the target bank account
-     * @param targetName    the target name
-     * @param amount        the amount
-     * @param description   the description
-     * @throws InvalidParamValueError if the amount is less than zero or the source bank account dus not have enough
-     *                                money
-     */
-    public synchronized void newTransaction(BankAccountBean sourceAccount, BankAccountBean targetAccount, String targetName, double amount, String description) throws InvalidParamValueError {
-        checkAmount(sourceAccount, amount);
-        sourceAccount.setBalance(sourceAccount.getBalance() - amount);
-        targetAccount.setBalance(targetAccount.getBalance() + amount);
-
-        TransactionBean transaction = new TransactionBean();
-        transaction.setSourceBankAccount(sourceAccount);
-        transaction.setTargetBankAccount(targetAccount);
+        account.setBalance(account.getBalance() + amount);
+        transaction.setTargetAccount(account);
         transaction.setTargetName(targetName);
         transaction.setAmount(amount);
         transaction.setMessage(description);
@@ -152,17 +113,96 @@ public class TransactionService {
     }
 
     /**
-     * Checks if the amount is valid for the given bank account.
+     * Makes a new withdrawal
      *
-     * @param bankAccount the given bank account
-     * @param amount      the amount
-     * @throws InvalidParamValueError if the amount is less than zero or the bank account dus not have enough money
+     * @param account the source account
+     * @param amount  the amount
+     * @throws InvalidParamValueError if the amount is less than zero or the source account dus not have enough
+     *                                money
      */
-    private void checkAmount(BankAccountBean bankAccount, double amount) throws InvalidParamValueError {
+    public synchronized void newWithdrawal(AccountBean account, String targetName, double amount, String description) throws InvalidParamValueError {
+        if (amount == 0) {
+            return;
+        }
+        checkAmount(account, amount);
+        TransactionBean transaction = new TransactionBean();
+        account.setBalance(account.getBalance() - amount);
+        transaction.setSourceAccount(account);
+        transaction.setTargetName(targetName);
+        transaction.setAmount(amount);
+        transaction.setMessage(description);
+        transaction.setDate(DateHelper.getTime());
+        saveTransaction(transaction);
+    }
+
+    /**
+     * Makes a new transaction.
+     *
+     * @param sourceAccount the source account
+     * @param targetAccount the target account
+     * @param targetName    the target name
+     * @param amount        the amount
+     * @param description   the description
+     * @throws InvalidParamValueError if the amount is less than zero or the source account dus not have enough
+     *                                money
+     */
+    public synchronized void newTransaction(AccountBean sourceAccount, AccountBean targetAccount, String targetName, double amount, String description) throws InvalidParamValueError {
+        if (amount == 0) {
+            return;
+        }
+        checkTransaction(sourceAccount, targetAccount);
+        checkAmount(sourceAccount, amount);
+        sourceAccount.setBalance(sourceAccount.getBalance() - amount);
+        targetAccount.setBalance(targetAccount.getBalance() + amount);
+
+        TransactionBean transaction = new TransactionBean();
+        transaction.setSourceAccount(sourceAccount);
+        transaction.setTargetAccount(targetAccount);
+        transaction.setTargetName(targetName);
+        transaction.setAmount(amount);
+        transaction.setMessage(description);
+        transaction.setDate(DateHelper.getTime());
+        saveTransaction(transaction);
+    }
+
+    /**
+     * Check if the transactions between the given source and target account is valid.
+     *
+     * @param sourceAccount the given source account
+     * @param targetAccount the given target account
+     * @throws InvalidParamValueError if the transaction is invalid
+     */
+    private void checkTransaction(AccountBean sourceAccount, AccountBean targetAccount) throws InvalidParamValueError {
+        if (sourceAccount instanceof SavingsAccountBean && !((SavingsAccountBean) sourceAccount).getCheckingAccount().equals(targetAccount)) {
+            throw new InvalidParamValueError("Transactions from savings accounts can only be made to the corresponding checkings account");
+        } else if (targetAccount instanceof SavingsAccountBean && !((SavingsAccountBean) targetAccount).getCheckingAccount().equals(sourceAccount)) {
+            throw new InvalidParamValueError("Transactions to savings accounts can only be made from the corresponding checkings account");
+        }
+    }
+
+    /**
+     * Checks if the amount is valid for the given account.
+     *
+     * @param account the given account
+     * @param amount  the amount
+     * @throws InvalidParamValueError if the amount is less than zero or the account dus not have enough money
+     */
+    private void checkAmount(AccountBean account, double amount) throws InvalidParamValueError {
+        checkAmount(amount);
+        if (amount > account.getBalance() + account.getOverdraftLimit()) {
+            throw new InvalidParamValueError("Amount more than available money");
+        }
+    }
+
+    /**
+     * Checks if the amount is valid
+     *
+     * @param amount the amount
+     * @throws InvalidParamValueError if the amount is less than zero
+     */
+    private void checkAmount(double amount) throws InvalidParamValueError {
         if (amount < 0) {
             throw new InvalidParamValueError("Amount less than zero: " + amount);
-        } else if (amount > bankAccount.getBalance() + bankAccount.getOverdraftLimit()) {
-            throw new InvalidParamValueError("Amount more than available money");
         }
     }
 

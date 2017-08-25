@@ -10,17 +10,12 @@ import static org.junit.Assert.assertThat;
 public class BeanTest {
     @Test
     public void testBankAccountBean() {
-        testBean(BankAccountBean.class);
+        testBean(CheckingAccountBean.class);
     }
 
     @Test
     public void testCardBean() {
         testBean(CardBean.class);
-    }
-
-    @Test
-    public void testIbanBean() {
-        testBean(IbanBean.class);
     }
 
     @Test

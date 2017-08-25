@@ -1,7 +1,8 @@
 package nl.springbank.services;
 
-import nl.springbank.bean.BankAccountBean;
+import nl.springbank.bean.AccountBean;
 import nl.springbank.bean.CardBean;
+import nl.springbank.bean.CheckingAccountBean;
 import nl.springbank.bean.UserBean;
 import nl.springbank.exceptions.InvalidPINError;
 import org.junit.Test;
@@ -31,39 +32,39 @@ import static org.junit.Assert.assertNotNull;
 @Transactional
 public class CardServiceTest {
     @Autowired
-    private BankAccountService bankAccountService;
+    private AccountService accountService;
 
     @Autowired
     private CardService cardService;
 
     @Test
     public void testGetCard() throws Exception {
-        BankAccountBean bankAccount = bankAccountService.getBankAccount("NL83SPRI0114480386");
+        AccountBean bankAccount = accountService.getAccount("NL83SPRI0114480386");
         CardBean card = cardService.getCard(bankAccount, "6095");
         assertNotNull(card);
         assertEquals(card.getCardNumber(), "6095");
-        assertEquals(card.getBankAccount(), bankAccount);
+        assertEquals(card.getAccount(), bankAccount);
     }
 
     @Test
     public void testCheckPin() throws Exception {
-        BankAccountBean bankAccount = bankAccountService.getBankAccount("NL83SPRI0114480386");
+        AccountBean bankAccount = accountService.getAccount("NL83SPRI0114480386");
         cardService.checkPin(bankAccount, "6095", "6957");
     }
 
     @Test(expected = InvalidPINError.class)
     public void testCheckInvalidPin() throws Exception {
-        BankAccountBean bankAccount = bankAccountService.getBankAccount("NL83SPRI0114480386");
+        AccountBean bankAccount = accountService.getAccount("NL83SPRI0114480386");
         cardService.checkPin(bankAccount, "6095", "0000");
     }
 
     @Test
     public void testNewCard() throws Exception {
-        BankAccountBean bankAccount = bankAccountService.getBankAccount("NL83SPRI0114480386");
+        AccountBean bankAccount = accountService.getAccount("NL83SPRI0114480386");
         UserBean user = bankAccount.getHolder();
         CardBean card = cardService.newCard(bankAccount, user);
         assertNotNull(card);
-        assertEquals(card.getBankAccount(), bankAccount);
+        assertEquals(card.getAccount(), bankAccount);
         assertEquals(card.getUser(), user);
         assertEquals(card, cardService.getCard(bankAccount, card.getCardNumber()));
     }

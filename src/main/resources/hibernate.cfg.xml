@@ -5,7 +5,7 @@
         <property name="hibernate.connection.username">springbank</property>
         <property name="hibernate.connection.password">bBFKB63UOxoKXrny</property>
         <property name="hibernate.show_sql">true</property>
-        <property name="hibernate.hbm2ddl.auto">create-drop</property>
+        <property name="hibernate.hbm2ddl.auto">create</property>
         <property name="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
     </session-factory>

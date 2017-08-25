@@ -6,7 +6,7 @@ import java.util.Date;
 import static javax.persistence.GenerationType.AUTO;
 
 /**
- * Bean representing the transaction table. A transaction is associated with a source and a target bank account.
+ * Bean representing a transaction.
  *
  * @author Tristan de Boer
  * @author Sven Konings
@@ -23,17 +23,17 @@ public class TransactionBean implements Comparable<TransactionBean> {
     @GeneratedValue(strategy = AUTO)
     private Long transactionId;
 
-    /** The source bank account. Is {@code null} for a deposit or when the source account has been closed. */
+    /** The source account. */
     @ManyToOne
     @JoinColumn(name = "source_account_id")
-    private BankAccountBean sourceBankAccount;
+    private AccountBean sourceAccount;
 
-    /** The target bank account. Is {@code null} if the target account has been closed. */
+    /** The target account. */
     @ManyToOne
     @JoinColumn(name = "target_account_id")
-    private BankAccountBean targetBankAccount;
+    private AccountBean targetAccount;
 
-    /** The target name of the transaction. Is {@code null} for a deposit. */
+    /** The target name of the transaction. */
     @Column(name = "target_name")
     private String targetName;
 
@@ -45,7 +45,7 @@ public class TransactionBean implements Comparable<TransactionBean> {
     @Column(name = "amount")
     private Double amount;
 
-    /** The message of the transaction. Is {@code null} for a deposit. */
+    /** The message of the transaction. */
     @Column(name = "message")
     private String message;
 
@@ -60,20 +60,20 @@ public class TransactionBean implements Comparable<TransactionBean> {
         this.transactionId = transactionId;
     }
 
-    public BankAccountBean getSourceBankAccount() {
-        return sourceBankAccount;
+    public AccountBean getSourceAccount() {
+        return sourceAccount;
     }
 
-    public void setSourceBankAccount(BankAccountBean sourceBankAccount) {
-        this.sourceBankAccount = sourceBankAccount;
+    public void setSourceAccount(AccountBean sourceAccount) {
+        this.sourceAccount = sourceAccount;
     }
 
-    public BankAccountBean getTargetBankAccount() {
-        return targetBankAccount;
+    public AccountBean getTargetAccount() {
+        return targetAccount;
     }
 
-    public void setTargetBankAccount(BankAccountBean targetBankAccount) {
-        this.targetBankAccount = targetBankAccount;
+    public void setTargetAccount(AccountBean targetAccount) {
+        this.targetAccount = targetAccount;
     }
 
     public String getTargetName() {
@@ -106,19 +106,6 @@ public class TransactionBean implements Comparable<TransactionBean> {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    @Override
-    public String toString() {
-        return "TransactionBean{" +
-                "transactionId=" + transactionId +
-                ", sourceBankAccount=" + sourceBankAccount +
-                ", targetBankAccount=" + targetBankAccount +
-                ", targetName='" + targetName + '\'' +
-                ", date=" + date +
-                ", amount=" + amount +
-                ", message='" + message + '\'' +
-                '}';
     }
 
     @Override

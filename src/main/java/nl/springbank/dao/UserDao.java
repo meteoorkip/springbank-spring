@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * UserDao. Communicates with the database and returns objects of type {@link UserBean}
+ * UserDao. Communicates with the database and returns objects of type {@link UserBean}.
  *
  * @author Tristan de Boer
  * @author Sven Konings

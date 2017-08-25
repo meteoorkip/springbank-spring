@@ -1,6 +1,6 @@
 package nl.springbank.services;
 
-import nl.springbank.bean.BankAccountBean;
+import nl.springbank.bean.AccountBean;
 import nl.springbank.bean.UserBean;
 import nl.springbank.exceptions.InvalidParamValueError;
 import org.junit.Test;
@@ -28,27 +28,27 @@ import static org.junit.Assert.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class BankAccountServiceTest {
+public class AccountServiceTest {
     @Autowired
     private UserService userService;
 
     @Autowired
-    private BankAccountService bankAccountService;
+    private AccountService accountService;
 
     @Test
     public void testGetBankAccount() throws Exception {
-        assertNotNull(bankAccountService.getBankAccount("NL83SPRI0114480386"));
+        assertNotNull(accountService.getAccount("NL83SPRI0114480386"));
     }
 
     @Test(expected = InvalidParamValueError.class)
     public void testGetInvalidBankAccount() throws Exception {
-        bankAccountService.getBankAccount("NL58INGB8290060130");
+        accountService.getAccount("NL58INGB8290060130");
     }
 
     @Test
     public void testNewBankAccount() throws Exception {
         UserBean user = userService.getUser(1);
-        BankAccountBean bankAccount = bankAccountService.newBankAccount(user);
+        AccountBean bankAccount = accountService.newCheckingAccount(user);
         assertNotNull(bankAccount);
         assertEquals(bankAccount.getHolder(), user);
         assertEquals(bankAccount.getBalance(), 0, 0);
@@ -58,15 +58,15 @@ public class BankAccountServiceTest {
         assertTrue(bankAccount.getCards().isEmpty());
         assertTrue(bankAccount.getSourceTransactions().isEmpty());
         assertTrue(bankAccount.getTargetTransactions().isEmpty());
-        assertEquals(bankAccount, bankAccountService.getBankAccount(bankAccount.getBankAccountId()));
+        assertEquals(bankAccount, accountService.getAccount(bankAccount.getAccountId()));
     }
 
     @Test
     public void testDeleteBankAccount() throws Exception {
-        BankAccountBean bankAccount = bankAccountService.getBankAccount("NL83SPRI0114480386");
-        bankAccountService.deleteBankAccount(bankAccount);
+        AccountBean bankAccount = accountService.getAccount("NL83SPRI0114480386");
+        accountService.deleteAccount(bankAccount);
         try {
-            bankAccountService.getBankAccount("NL83SPRI0114480386");
+            accountService.getAccount("NL83SPRI0114480386");
             fail();
         } catch (InvalidParamValueError ignored) {
         }

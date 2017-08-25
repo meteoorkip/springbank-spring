@@ -1,15 +1,15 @@
 package nl.springbank.objects;
 
-import nl.springbank.bean.BankAccountBean;
+import nl.springbank.bean.AccountBean;
 
 /**
  * @author Sven Konings
  */
-public class OverdraftObject {
+public class OverdraftLimitObject {
     private int overdraftLimit;
 
-    public OverdraftObject(BankAccountBean bankAccountBean) {
-        this.overdraftLimit = bankAccountBean.getOverdraftLimit();
+    public OverdraftLimitObject(AccountBean account) {
+        this.overdraftLimit = account.getOverdraftLimit();
     }
 
     public int getOverdraftLimit() {
