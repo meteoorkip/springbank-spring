@@ -1,10 +1,7 @@
 package nl.springbank.controllers.info;
 
 import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceImpl;
-import nl.springbank.bean.AccountBean;
-import nl.springbank.bean.CheckingAccountBean;
-import nl.springbank.bean.TransactionBean;
-import nl.springbank.bean.UserBean;
+import nl.springbank.bean.*;
 import nl.springbank.exceptions.InvalidParamValueError;
 import nl.springbank.exceptions.NotAuthorizedError;
 import nl.springbank.objects.BalanceObject;
@@ -20,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Sven Konings
@@ -41,17 +39,22 @@ public class InfoControllerImpl implements InfoController {
 
     @Override
     public BalanceObject getBalance(String authToken, String iBAN) throws InvalidParamValueError, NotAuthorizedError {
-        AccountBean account = accountService.getAccount(iBAN);
-        userService.checkAccess(account, authToken);
-        return new BalanceObject(account);
+        CheckingAccountBean checkingAccount = accountService.getCheckingAccount(iBAN);
+        userService.checkAccess(checkingAccount, authToken);
+        return new BalanceObject(checkingAccount);
     }
 
     @Override
     public List<TransactionObject> getTransactionsOverview(String authToken, String iBAN, int nrOfTransactions) throws InvalidParamValueError, NotAuthorizedError {
-        AccountBean account = accountService.getAccount(iBAN);
-        userService.checkAccess(account, authToken);
-        List<TransactionBean> transactions = transactionService.getTransactionsBySourceOrTargetAccount(account, account);
-        return transactions.stream()
+        CheckingAccountBean checkingAccount = accountService.getCheckingAccount(iBAN);
+        userService.checkAccess(checkingAccount, authToken);
+        Stream<TransactionBean> transactions = transactionService.getTransactionsBySourceOrTargetAccount(checkingAccount, checkingAccount).stream();
+        SavingsAccountBean savingsAccount = checkingAccount.getSavingsAccount();
+        if (savingsAccount != null) {
+            Stream<TransactionBean> savingsTransactions = transactionService.getTransactionsBySourceOrTargetAccount(savingsAccount, savingsAccount).stream();
+            transactions = Stream.concat(transactions, savingsTransactions).distinct().sorted();
+        }
+        return transactions
                 .limit(nrOfTransactions)
                 .map(TransactionObject::new)
                 .collect(Collectors.toList());
