@@ -4,11 +4,10 @@ import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceImpl;
 import nl.springbank.bean.*;
 import nl.springbank.exceptions.InvalidParamValueError;
 import nl.springbank.exceptions.NotAuthorizedError;
-import nl.springbank.objects.BalanceObject;
-import nl.springbank.objects.BankAccountAccessObject;
-import nl.springbank.objects.TransactionObject;
-import nl.springbank.objects.UserAccessObject;
+import nl.springbank.helper.DateHelper;
+import nl.springbank.objects.*;
 import nl.springbank.services.AccountService;
+import nl.springbank.services.LogService;
 import nl.springbank.services.TransactionService;
 import nl.springbank.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +28,14 @@ public class InfoControllerImpl implements InfoController {
     private final AccountService accountService;
     private final UserService userService;
     private final TransactionService transactionService;
+    private final LogService logService;
 
     @Autowired
-    public InfoControllerImpl(AccountService accountService, UserService userService, TransactionService transactionService) {
+    public InfoControllerImpl(AccountService accountService, UserService userService, TransactionService transactionService, LogService logService) {
         this.accountService = accountService;
         this.userService = userService;
         this.transactionService = transactionService;
+        this.logService = logService;
     }
 
     @Override
@@ -76,6 +77,14 @@ public class InfoControllerImpl implements InfoController {
         Set<UserBean> accessUsers = account.getAccessUsers();
         return accessUsers.stream()
                 .map(BankAccountAccessObject::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<EventLogObject> getEventLogs(String beginDate, String endDate) throws InvalidParamValueError {
+        List<LogBean> logs = logService.getLogs(DateHelper.getDateFromString(beginDate), DateHelper.getDateFromString(endDate));
+        return logs.stream()
+                .map(EventLogObject::new)
                 .collect(Collectors.toList());
     }
 }

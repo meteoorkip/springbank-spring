@@ -36,12 +36,13 @@ public class AccountControllerImpl implements AccountController {
 
     @Override
     public OpenedAccountObject openAccount(String name, String surname, String initials, String dob, String ssn, String address, String telephoneNumber, String email, String username, String password) throws InvalidParamValueError {
-        UserBean user = userService.newUser(name, surname, initials, dob, ssn, address, telephoneNumber, email, username, password);
+        UserBean user;
         try {
-            return openAccount(user);
+            user = userService.newUser(name, surname, initials, dob, ssn, address, telephoneNumber, email, username, password);
         } catch (DataIntegrityViolationException e) {
             throw new InvalidParamValueError(e);
         }
+        return openAccount(user);
     }
 
     @Override

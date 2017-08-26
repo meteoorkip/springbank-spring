@@ -6,10 +6,7 @@ import com.googlecode.jsonrpc4j.JsonRpcParam;
 import com.googlecode.jsonrpc4j.JsonRpcService;
 import nl.springbank.exceptions.InvalidParamValueError;
 import nl.springbank.exceptions.NotAuthorizedError;
-import nl.springbank.objects.BalanceObject;
-import nl.springbank.objects.BankAccountAccessObject;
-import nl.springbank.objects.TransactionObject;
-import nl.springbank.objects.UserAccessObject;
+import nl.springbank.objects.*;
 
 import java.util.List;
 
@@ -109,4 +106,24 @@ public interface InfoController {
             @JsonRpcParam("authToken") String authToken,
             @JsonRpcParam("iBAN") String iBAN
     ) throws InvalidParamValueError, NotAuthorizedError;
+
+    /**
+     * Method that requests all events logged between two dates.
+     *
+     * @param beginDate Begin date of period for which log are requested
+     * @param endDate   End date of period for which log are requested
+     * @return An array of dictionaries containing the following members:
+     * <ul>
+     * <li><b>timeStamp</b> TimeStamp of the event</li>
+     * <li><b>eventLog</b> Info about the event</li>
+     * </ul>
+     * @throws InvalidParamValueError One or more parameter has an invalid value. See message.
+     */
+    @JsonRpcErrors({
+            @JsonRpcError(exception = InvalidParamValueError.class, code = 418)
+    })
+    List<EventLogObject> getEventLogs(
+            @JsonRpcParam("beginDate") String beginDate,
+            @JsonRpcParam("endDate") String endDate
+    ) throws InvalidParamValueError;
 }
