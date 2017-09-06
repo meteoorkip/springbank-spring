@@ -7,8 +7,8 @@ import nl.springbank.bean.CheckingAccountBean;
  * @author Sven Konings
  */
 public class BalanceObject {
-    private double balance;
-    private double savingAccountBalance;
+    private Double balance;
+    private Double savingAccountBalance;
 
     public BalanceObject(CheckingAccountBean checkingAccount) {
         this.balance = checkingAccount.getBalance();
@@ -17,19 +17,19 @@ public class BalanceObject {
         }
     }
 
-    public double getBalance() {
+    public Double getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(Double balance) {
         this.balance = balance;
     }
 
-    public double getSavingAccountBalance() {
+    public Double getSavingAccountBalance() {
         return savingAccountBalance;
     }
 
-    public void setSavingAccountBalance(double savingAccountBalance) {
+    public void setSavingAccountBalance(Double savingAccountBalance) {
         this.savingAccountBalance = savingAccountBalance;
     }
 }

@@ -11,7 +11,7 @@ public class TransactionObject {
     private String targetIBAN;
     private String targetName;
     private String date;
-    private double amount;
+    private Double amount;
     private String description;
 
     public TransactionObject(TransactionBean transactionBean) {
@@ -55,11 +55,11 @@ public class TransactionObject {
         this.date = date;
     }
 
-    public double getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
