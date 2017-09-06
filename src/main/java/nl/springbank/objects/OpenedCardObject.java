@@ -19,7 +19,7 @@ public class OpenedCardObject {
 
     public OpenedCardObject(CardBean card, boolean newPin) {
         this.pinCard = card.getCardNumber();
-        if (!newPin) {
+        if (newPin) {
             this.pinCode = card.getPin();
         }
         this.expirationDate = DateHelper.getStringFromDate(card.getExpirationDate());
