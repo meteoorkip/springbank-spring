@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonrpc4j.InvocationListener;
 import nl.springbank.services.LogService;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -36,6 +37,9 @@ public class JsonRpcInvocationListener implements InvocationListener {
             logService.newLog("method: %s, arguments: %s", method.getName(), arguments);
         }
         if (t != null) {
+            if (t instanceof InvocationTargetException) {
+                t = ((InvocationTargetException) t).getTargetException();
+            }
             logService.newErrorLog(t.toString());
         }
     }
