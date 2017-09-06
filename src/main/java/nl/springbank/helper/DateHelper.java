@@ -15,6 +15,8 @@ import java.util.Locale;
 public class DateHelper {
     private static final Calendar CALENDAR = Calendar.getInstance();
     private static final Date INITIAL_TIME = CALENDAR.getTime();
+//    private static final String DATE_FORMAT = "EEE MMM dd HH:mm:ss zzz yyyy";
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
 
     /**
      * Get the simulatid calendar.
@@ -54,7 +56,7 @@ public class DateHelper {
      */
     public static Date getDateFromString(String dateString) throws InvalidParamValueError {
         try {
-            return new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US).parse(dateString);
+            return new SimpleDateFormat(DATE_FORMAT, Locale.US).parse(dateString);
         } catch (ParseException e) {
             throw new InvalidParamValueError(e);
         }
@@ -67,7 +69,7 @@ public class DateHelper {
      * @return the resulting string
      */
     public static String getStringFromDate(Date date) {
-        return new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(date);
+        return new SimpleDateFormat(DATE_FORMAT, Locale.US).format(date);
     }
 
     /**
