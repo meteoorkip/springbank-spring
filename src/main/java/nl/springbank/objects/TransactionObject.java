@@ -1,6 +1,7 @@
 package nl.springbank.objects;
 
 import nl.springbank.bean.TransactionBean;
+import nl.springbank.helper.DateHelper;
 
 /**
  * @author Sven Konings
@@ -17,7 +18,7 @@ public class TransactionObject {
         if (transactionBean.getSourceAccount() != null) this.sourceIBAN = transactionBean.getSourceAccount().getIban();
         if (transactionBean.getTargetAccount() != null) this.targetIBAN = transactionBean.getTargetAccount().getIban();
         this.targetName = transactionBean.getTargetName();
-        this.date = transactionBean.getDate().toString();
+        this.date = DateHelper.getStringFromDate(transactionBean.getDate());
         this.amount = transactionBean.getAmount();
         this.description = transactionBean.getMessage();
     }

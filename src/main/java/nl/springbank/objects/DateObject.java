@@ -1,5 +1,7 @@
 package nl.springbank.objects;
 
+import nl.springbank.helper.DateHelper;
+
 import java.util.Date;
 
 /**
@@ -9,7 +11,7 @@ public class DateObject {
     private String date;
 
     public DateObject(Date date) {
-        this.date = date.toString();
+        this.date = DateHelper.getStringFromDate(date);
     }
 
     public String getDate() {

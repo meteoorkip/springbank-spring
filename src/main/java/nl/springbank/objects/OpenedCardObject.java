@@ -1,6 +1,7 @@
 package nl.springbank.objects;
 
 import nl.springbank.bean.CardBean;
+import nl.springbank.helper.DateHelper;
 
 /**
  * @author Tristan de Boer
@@ -21,7 +22,7 @@ public class OpenedCardObject {
         if (!newPin) {
             this.pinCode = card.getPin();
         }
-        this.expirationDate = card.getExpirationDate().toString();
+        this.expirationDate = DateHelper.getStringFromDate(card.getExpirationDate());
     }
 
     public String getPinCard() {

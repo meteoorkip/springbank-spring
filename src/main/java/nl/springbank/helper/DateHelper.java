@@ -61,6 +61,16 @@ public class DateHelper {
     }
 
     /**
+     * Returns a string representation of the given date
+     *
+     * @param date the given date
+     * @return the resulting string
+     */
+    public static String getStringFromDate(Date date) {
+        return new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(date);
+    }
+
+    /**
      * Reset the date to the original time.
      */
     public static void resetDate() {
