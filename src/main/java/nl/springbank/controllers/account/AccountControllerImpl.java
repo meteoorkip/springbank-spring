@@ -61,6 +61,7 @@ public class AccountControllerImpl implements AccountController {
     public void closeAccount(String authToken, String iBAN) throws InvalidParamValueError, NotAuthorizedError {
         CheckingAccountBean checkingAccount = accountService.getCheckingAccount(iBAN);
         userService.checkHolder(checkingAccount, authToken);
+        transactionService.clearAccountTransactions(checkingAccount);
         accountService.closeCheckingAccount(checkingAccount);
         UserBean user = userService.getUserByAuth(authToken);
         if (user.getHolderAccounts().isEmpty()) {
@@ -80,6 +81,7 @@ public class AccountControllerImpl implements AccountController {
         SavingsAccountBean savingsAccount = accountService.getSavingsAccount(iBAN);
         userService.checkHolder(savingsAccount, authToken);
         transactionService.newTransaction(savingsAccount, savingsAccount.getCheckingAccount(), "Closed savings account", savingsAccount.getBalance(), "Money left on savings account");
+        transactionService.clearAccountTransactions(savingsAccount);
         accountService.closeSavingsAccount(savingsAccount);
     }
 }

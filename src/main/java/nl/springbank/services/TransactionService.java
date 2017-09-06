@@ -47,6 +47,40 @@ public class TransactionService {
     }
 
     /**
+     * Get the transactions with the given source account.
+     *
+     * @param sourceAccount the given source account
+     * @return the list of transactions
+     * @throws InvalidParamValueError if an error occurred
+     */
+    public List<TransactionBean> getTransactionsBySourceAccount(AccountBean sourceAccount) throws InvalidParamValueError {
+        List<TransactionBean> transactions;
+        try {
+            transactions = transactionDao.findBySourceAccount(sourceAccount);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidParamValueError(e);
+        }
+        return transactions;
+    }
+
+    /**
+     * Get the transactions with the given target account.
+     *
+     * @param targetAccount the given target account
+     * @return the list of transactions
+     * @throws InvalidParamValueError if an error occurred
+     */
+    public List<TransactionBean> getTransactionsByTargetAccount(AccountBean targetAccount) throws InvalidParamValueError {
+        List<TransactionBean> transactions;
+        try {
+            transactions = transactionDao.findByTargetAccount(targetAccount);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidParamValueError(e);
+        }
+        return transactions;
+    }
+
+    /**
      * Get the transactions with the given source or target account.
      *
      * @param sourceAccount the given source account
@@ -89,6 +123,26 @@ public class TransactionService {
      */
     public List<TransactionBean> getTransactions() {
         return transactionDao.findAll();
+    }
+
+    /**
+     * Clear the given account from all transactions it is involved in. Should only be done if the account is to be
+     * deleted.
+     *
+     * @param account the given account
+     * @throws InvalidParamValueError if an error occurred
+     */
+    public void clearAccountTransactions(AccountBean account) throws InvalidParamValueError {
+        List<TransactionBean> sourceTransactions = getTransactionsBySourceAccount(account);
+        for (TransactionBean sourceTransaction : sourceTransactions) {
+            sourceTransaction.setSourceAccount(null);
+        }
+        saveTransactions(sourceTransactions);
+        List<TransactionBean> targetTransactions = getTransactionsByTargetAccount(account);
+        for (TransactionBean targetTransaction : targetTransactions) {
+            targetTransaction.setTargetAccount(null);
+        }
+        saveTransactions(targetTransactions);
     }
 
     /**
